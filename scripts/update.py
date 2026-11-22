@@ -23,7 +23,7 @@ INDEX = os.path.join(DATA, "nepse_index.csv")
 UNIVERSE = os.path.join(DATA, "universe.csv")
 BREADTH = os.path.join(DATA, "breadth.csv")
 
-BACKFILL_START = date(2025, 9, 1)
+BACKFILL_START = date(2026, 1, 1)
 NEPAL_TZ = timezone(timedelta(hours=5, minutes=45))
 
 PRICE_FIELDS = ["date", "symbol", "open", "high", "low", "close", "prev_close",
@@ -117,11 +117,19 @@ def fetch(nepse):
     start = (date.fromisoformat(last) + timedelta(days=1)) if last else BACKFILL_START
     today_np = datetime.now(NEPAL_TZ).date()
     new_rows = []
+    failed = []
     d = start
     while d <= today_np:
         # skip Saturday (NEPSE never trades); other closed days just return nothing
         if d.weekday() != 5:
-            res = with_retry(nepse.getPriceVolumeHistory, d.isoformat())
+            try:
+                res = with_retry(nepse.getPriceVolumeHistory, d.isoformat())
+            except Exception as e:
+                # A single bad day must not stop the whole update; it is logged and skipped.
+                print(f"{d}: could not download ({type(e).__name__}), skipped")
+                failed.append(d.isoformat())
+                d += timedelta(days=1)
+                continue
             items = res.get("content", []) if isinstance(res, dict) else (res or [])
             for r in items:
                 new_rows.append({
@@ -150,6 +158,10 @@ def fetch(nepse):
     all_rows.sort(key=lambda r: (r["date"], r["symbol"]))
     write_csv(PRICES, PRICE_FIELDS, all_rows)
     print(f"prices: {len(new_rows)} new rows, {len(all_rows)} total")
+    if failed:
+        print(f"WARNING: {len(failed)} day(s) could not be downloaded: {', '.join(failed)}")
+        if len(failed) > 5:
+            raise SystemExit("Too many failed days - NEPSE may be blocking or down. Nothing saved is lost; try again later.")
 
     # NEPSE index history (id 58)
     idx = with_retry(nepse.requestGETAPI, "/api/nots/index/history/58?size=500")
