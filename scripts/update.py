@@ -191,9 +191,18 @@ def compute():
     closes = defaultdict(list)  # symbol -> carried-forward close per market day
     last_close = {}
     out = []
+    adjustments = 0
     for i, d in enumerate(dates):
         today = by_date[d]
         for s, r in today.items():
+            # Bonus/right share adjustment: on the book-closure day NEPSE lowers the
+            # "previous close". Scale this stock's older prices by the same factor so the
+            # moving averages are not distorted (same as adjusted charts on SastoShare etc).
+            pc = num(r["prev_close"])
+            if s in last_close and pc and last_close[s] and abs(pc / last_close[s] - 1) > 0.01:
+                f = pc / last_close[s]
+                closes[s] = [x * f for x in closes[s]]
+                adjustments += 1
             last_close[s] = num(r["close"])
         for s, c in last_close.items():
             closes[s].append(c)
@@ -246,7 +255,8 @@ def compute():
 
     out.reverse()  # newest first, like the sheet
     write_csv(BREADTH, BREADTH_HEADER, out)
-    print(f"breadth: {len(out)} rows, latest {out[0][0] if out else '-'}")
+    print(f"breadth: {len(out)} rows, latest {out[0][0] if out else '-'}, "
+          f"{adjustments} bonus/right price adjustments applied")
 
 
 if __name__ == "__main__":
