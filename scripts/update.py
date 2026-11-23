@@ -51,6 +51,9 @@ BREADTH_HEADER = [
     "New 1M highs",
     "New 1M lows",
     "1M net",
+    "New 52W highs",
+    "New 52W lows",
+    "52W net",
     "NEPSE close",
     "Stocks counted",
 ]
@@ -207,8 +210,14 @@ def compute():
         for s, c in last_close.items():
             closes[s].append(c)
 
-        up = dn = 0
+        up = dn = hi52 = lo52 = 0
         for s, r in today.items():
+            # New 52-week high/low, using NEPSE's official 52-week high/low figures
+            h, l, h52, l52 = num(r["high"]), num(r["low"]), num(r.get("high52")), num(r.get("low52"))
+            if h and h52 and h >= h52 - 0.01:
+                hi52 += 1
+            if l and l52 and l <= l52 + 0.01:
+                lo52 += 1
             c, p = num(r["close"]), num(r["prev_close"])
             if p:
                 ch = (c / p - 1) * 100
@@ -250,6 +259,7 @@ def compute():
             f"{a20 / (a20 + b20) * 100:.2f}%" if a20 + b20 else "",
             f"{a50 / (a50 + b50) * 100:.2f}%" if a50 + b50 else "",
             u20, d20, u20 - d20, hi1m, lo1m, hi1m - lo1m,
+            hi52, lo52, hi52 - lo52,
             ix.get("close", ""), counted,
         ])
 
