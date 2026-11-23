@@ -22,6 +22,9 @@ PRICES = os.path.join(DATA, "prices.csv")
 INDEX = os.path.join(DATA, "nepse_index.csv")
 UNIVERSE = os.path.join(DATA, "universe.csv")
 BREADTH = os.path.join(DATA, "breadth.csv")
+HISTORY_PRICES = os.path.join(DATA, "history_prices.csv")      # older years, see import_history.py
+HISTORY_TURNOVER = os.path.join(DATA, "history_turnover.csv")
+OUTPUT_START = "2020-01-01"
 
 BACKFILL_START = date(2026, 1, 1)
 NEPAL_TZ = timezone(timedelta(hours=5, minutes=45))
@@ -182,16 +185,31 @@ def fetch(nepse):
 # ------------------------------------------------------------------------ compute
 def compute():
     universe = {r["symbol"] for r in read_csv(UNIVERSE)}
-    prices = [r for r in read_csv(PRICES) if r["symbol"] in universe]
     index = {r["date"]: r for r in read_csv(INDEX)}
+    old_turnover = {r["date"]: num(r["turnover"]) for r in read_csv(HISTORY_TURNOVER)}
 
+    # Older history (public dataset, equities only) + official NEPSE data (preferred where both exist)
     by_date = defaultdict(dict)
-    for r in prices:
-        if num(r["close"]):
+    history = read_csv(HISTORY_PRICES)
+    allowed = universe | {r["symbol"] for r in history}
+    for r in history + read_csv(PRICES):
+        if r["symbol"] in allowed and num(r["close"]):
             by_date[r["date"]][r["symbol"]] = r
     dates = sorted(by_date)
 
-    closes = defaultdict(list)  # symbol -> carried-forward close per market day
+    # Companies that no longer exist (merged/delisted) stop being counted after their last trade
+    last_seen = {}
+    for d in dates:
+        for s in by_date[d]:
+            last_seen[s] = d
+    gone_after = defaultdict(list)
+    for s, d in last_seen.items():
+        if s not in universe:
+            gone_after[d].append(s)
+
+    closes = defaultdict(list)    # symbol -> carried-forward (adjusted) close per market day
+    hilo = defaultdict(list)      # symbol -> [market day, adjusted high, adjusted low] on traded days
+    first_day = {}
     last_close = {}
     out = []
     adjustments = 0
@@ -205,24 +223,31 @@ def compute():
             if s in last_close and pc and last_close[s] and abs(pc / last_close[s] - 1) > 0.01:
                 f = pc / last_close[s]
                 closes[s] = [x * f for x in closes[s]]
+                for e in hilo[s]:
+                    e[1] *= f
+                    e[2] *= f
                 adjustments += 1
             last_close[s] = num(r["close"])
+            first_day.setdefault(s, i)
         for s, c in last_close.items():
             closes[s].append(c)
 
         up = dn = hi52 = lo52 = 0
         for s, r in today.items():
-            # New 52-week high/low, using NEPSE's official 52-week high/low figures
-            h, l, h52, l52 = num(r["high"]), num(r["low"]), num(r.get("high52")), num(r.get("low52"))
-            if h and h52 and h >= h52 - 0.01:
-                hi52 += 1
-            if l and l52 and l <= l52 + 0.01:
-                lo52 += 1
             c, p = num(r["close"]), num(r["prev_close"])
             if p:
                 ch = (c / p - 1) * 100
                 up += ch >= 4.5
                 dn += ch <= -4.5
+            # New 52-week high/low (about 250 market days, bonus-adjusted); stock must be listed 1 year+
+            h, l = num(r["high"]) or c, num(r["low"]) or c
+            hist = hilo[s]
+            while hist and hist[0][0] <= i - 250:
+                hist.pop(0)
+            if first_day[s] <= i - 249 and hist:
+                hi52 += h > max(e[1] for e in hist)
+                lo52 += l < min(e[2] for e in hist)
+            hist.append([i, h, l])
 
         u5 = d5 = u20 = d20 = a20 = b20 = a50 = b50 = hi1m = lo1m = counted = 0
         for s, cl in closes.items():
@@ -248,10 +273,14 @@ def compute():
                 a50 += c > m
                 b50 += c <= m
 
-        if i + 1 < WARMUP_DAYS:
+        for s in gone_after.get(d, []):
+            last_close.pop(s, None)
+            closes.pop(s, None)
+
+        if i + 1 < WARMUP_DAYS or d < OUTPUT_START:
             continue
         ix = index.get(d, {})
-        turnover = num(ix.get("turnover"))
+        turnover = num(ix.get("turnover")) or old_turnover.get(d)
         out.append([
             d, up, dn, u5, d5, a20, b20, a50, b50,
             f"{turnover / 1e9:.3f}" if turnover else "",
@@ -265,7 +294,7 @@ def compute():
 
     out.reverse()  # newest first, like the sheet
     write_csv(BREADTH, BREADTH_HEADER, out)
-    print(f"breadth: {len(out)} rows, latest {out[0][0] if out else '-'}, "
+    print(f"breadth: {len(out)} rows, {out[-1][0] if out else '-'} .. {out[0][0] if out else '-'}, "
           f"{adjustments} bonus/right price adjustments applied")
 
 
