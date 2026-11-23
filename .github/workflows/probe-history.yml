@@ -1,0 +1,32 @@
+name: Probe old history (one-off)
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install git+https://github.com/basic-bgnr/NepseUnofficialApi
+      - run: |
+          python - <<'PY'
+          import time, json
+          from nepse import Nepse
+          n = Nepse(); n.setTLSVerification(False)
+          for d in ["2019-12-02","2020-01-05","2020-06-15","2021-01-04","2021-06-01","2022-01-03","2023-01-02","2024-01-02","2024-06-03","2025-01-02","2025-06-02","2025-09-01","2025-09-02","2025-10-01","2025-12-01"]:
+              t=time.time()
+              try:
+                  r = n.getPriceVolumeHistory(d)
+                  items = r.get("content", []) if isinstance(r, dict) else (r or [])
+                  print("PROBE", d, len(items), "items", f"{time.time()-t:.1f}s", (items[0]["symbol"], items[0].get("closePrice"), items[0].get("fiftyTwoWeekHigh")) if items else "")
+              except Exception as e:
+                  print("PROBE", d, "ERROR", type(e).__name__, str(e)[:150])
+          for page in [0, 1, 2, 3]:
+              try:
+                  r = n.requestGETAPI(url=f"/api/nots/index/history/58?size=500&page={page}")
+                  c = r.get("content", [])
+                  print("INDEX page", page, len(c), c[0]["businessDate"] if c else "", c[-1]["businessDate"] if c else "", "total", r.get("totalElements"))
+              except Exception as e:
+                  print("INDEX page", page, "ERROR", e)
+          PY
