@@ -23,6 +23,8 @@
   --sig-red: #ea4335;
   --sig-yellow: #fbbc04;
   --sig-green: #34a853;
+  --teal: #1f9e88;
+  --clay: #df6a42;
   --accent: #111827;
   --mix: 0.78;
 }
@@ -32,7 +34,7 @@
     --bg: #121211; --surface-1: #1a1a19; --surface-2: #232321; --border: #33322f;
     --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #8f8e86; --grid: #2c2b29;
     --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
-    --accent: #f0efec; --mix: 0.62;
+    --teal: #7ae6ce; --clay: #ff8e68; --accent: #f0efec; --mix: 0.62;
   }
 }
 :root[data-theme="dark"] {
@@ -40,7 +42,7 @@
   --bg: #121211; --surface-1: #1a1a19; --surface-2: #232321; --border: #33322f;
   --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #8f8e86; --grid: #2c2b29;
   --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
-  --accent: #f0efec; --mix: 0.62;
+  --teal: #7ae6ce; --clay: #ff8e68; --accent: #f0efec; --mix: 0.62;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text-primary);
@@ -77,8 +79,8 @@ section.card h2 { margin: 0 0 2px; font-size: 13px; text-transform: uppercase; l
 .bar { display: flex; align-items: center; gap: 6px; height: 22px; font-size: 12px; color: var(--text-secondary); }
 .bar.left { justify-content: flex-end; }
 .bar i { display: block; height: 18px; border-radius: 4px; min-width: 2px; }
-.bar.left i { background: var(--sig-red); }
-.bar.right i { background: var(--sig-green); }
+.bar.left i { background: var(--clay); }
+.bar.right i { background: var(--teal); }
 .strips { display: grid; grid-template-columns: 150px 1fr; gap: 8px 12px; align-items: center; }
 .strip-label { font-size: 12.5px; color: var(--text-secondary); line-height: 1.2; }
 .strip { display: flex; gap: 1px; height: 26px; overflow: hidden; }
@@ -114,6 +116,37 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
 .help { font-size: 13px; color: var(--text-secondary); }
 .help li { margin: 3px 0; }
 .err { color: var(--sig-red); }
+.strip span.sel { outline: 2px solid var(--text-primary); outline-offset: -1px; }
+.readout { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: var(--surface-2); font-size: 13px; display: none; }
+.readout.on { display: block; }
+.readout .r-date { font-weight: 700; margin-bottom: 4px; }
+.readout .r-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2px 16px; }
+.readout b { font-variant-numeric: tabular-nums; }
+.filters { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
+.filters label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+.filters select, .filters input { font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary); min-width: 120px; }
+.filters input { width: 90px; min-width: 0; }
+.actions { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0 10px; }
+.result { font-size: 18px; margin: 6px 0 10px; }
+.result b { color: var(--teal); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--border); background: var(--surface-2); border-radius: 6px; padding: 3px 8px; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; cursor: default; }
+.chip small { font-weight: 500; color: var(--text-secondary); margin-left: 5px; }
+.empty { color: var(--text-muted); font-size: 13px; }
+.secrank { display: grid; grid-template-columns: minmax(150px, 220px) 1fr 120px; gap: 6px 14px; align-items: center; font-size: 13px; }
+.secrank .nm { cursor: pointer; }
+.secrank .nm:hover { text-decoration: underline; }
+.secrank .nm small { color: var(--text-muted); }
+.secrank .track { position: relative; height: 12px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+.secrank .track i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; }
+.secrank .track i.pale { background: var(--teal); opacity: .35; }
+.secrank .track i.dark { background: var(--teal); }
+.secrank .ct { text-align: right; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.secrank .names { grid-column: 1 / -1; font-size: 12px; color: var(--text-muted); margin: -4px 0 6px; }
+.subhead { font-size: 13px; color: var(--text-secondary); margin: 16px 0 8px; }
+.toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 20; }
+.toast.on { opacity: 1; }
+@media (max-width: 560px) { .secrank { grid-template-columns: 1fr 80px; } .secrank .track { grid-column: 1 / -1; order: 3; } }
 @media (max-width: 560px) {
   .headline p { font-size: 17px; }
   .hl { grid-template-columns: 34px 1fr 52px 1fr; }
@@ -134,7 +167,8 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
   </header>
   <nav class="jump" aria-label="Sections">
     <a href="#highs">Highs vs lows</a><a href="#sessions">Sessions</a><a href="#trend">Chart</a>
-    <a href="#today">Today's numbers</a><a href="#log">Breadth log</a><a href="#howto">How to read</a>
+    <a href="#today">Today's numbers</a><a href="#clusters">Sectors</a><a href="#momentum">Broad momentum</a>
+    <a href="#h52">52-week highs</a><a href="#rs">RS rating</a><a href="#log">Breadth log</a><a href="#howto">How to read</a>
   </nav>
 
   <section class="card headline" id="headline">
@@ -150,9 +184,10 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
 
   <section class="card" id="sessions">
     <h2>The last <span id="sess-n">125</span> sessions</h2>
-    <p class="sub">One thin bar per trading day, oldest on the left, today on the right. Green = broad strength, red = broad weakness. Monthly thrust = stocks up 25%+ in 20 sessions minus stocks down 25%+.</p>
+    <p class="sub">One thin bar per trading day, oldest on the left, today on the right. Teal = broad strength, clay = broad weakness; the brighter the bar, the stronger the reading. Tap or hover a bar to see that day's numbers. Monthly thrust = stocks up 25%+ in 20 sessions minus stocks down 25%+.</p>
     <div class="controls" id="sess-ranges"></div>
     <div class="strips" id="strips"></div>
+    <div class="readout" id="readout" aria-live="polite"></div>
     <div class="legend"><span>Weak</span><span class="ramp" id="ramp"></span><span>Strong</span></div>
   </section>
 
@@ -171,6 +206,55 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     <div class="tiles" id="tiles"></div>
   </section>
 
+  <section class="card" id="clusters">
+    <h2>Where new highs cluster</h2>
+    <p class="sub">Sectors ranked by the share of their stocks at a 3-month high today (dark bar). The pale bar is the share at a 1-month high. Tap a sector to list it in Broad momentum below.</p>
+    <div class="actions" id="cl-actions"></div>
+    <div class="secrank" id="cl"></div>
+  </section>
+
+  <section class="card" id="momentum">
+    <h2>Broad momentum</h2>
+    <p class="sub">Pick a sector, a gain and a number of trading days. See how many stocks gained at least that much, so you can tell a broad advance from a few stocks doing the work.</p>
+    <div class="filters">
+      <label>Sector<select id="m-sec"></select></label>
+      <label>Gain of at least<select id="m-gain"></select></label>
+      <label>Over the last<select id="m-days"></select></label>
+    </div>
+    <div class="actions" id="m-actions"></div>
+    <p class="result" id="m-result"></p>
+    <div class="chips" id="m-list"></div>
+    <p class="subhead">Every sector, ranked by the share of its stocks that pass the same test (tap one to list it above):</p>
+    <div class="secrank" id="m-rank"></div>
+  </section>
+
+  <section class="card" id="h52">
+    <h2>52-week highs</h2>
+    <p class="sub">Stocks at a new high today, or close to their 52-week high (intraday prices, adjusted for bonus shares).</p>
+    <div class="filters">
+      <label>Show<select id="h-mode"></select></label>
+      <label>Within (%)<input id="h-pct" type="number" min="0.5" max="30" step="0.5" value="5"></label>
+      <label>Sector<select id="h-sec"></select></label>
+    </div>
+    <div class="actions" id="h-actions"></div>
+    <p class="result" id="h-result"></p>
+    <div class="chips" id="h-list"></div>
+  </section>
+
+  <section class="card" id="rs">
+    <h2>RS rating</h2>
+    <p class="sub">Relative strength ranked 1 to 99: 99 means a stock has beaten almost every other NEPSE stock over the past year, with the latest three months counting double. Only stocks listed for a full year that traded on at least 20 of the last 60 days are rated.</p>
+    <div class="filters">
+      <label>RS rating at least<input id="r-min" type="number" min="1" max="99" step="1" value="80"></label>
+      <label>Sector<select id="r-sec"></select></label>
+    </div>
+    <div class="actions" id="r-actions"></div>
+    <p class="result" id="r-result"></p>
+    <div class="chips" id="r-list"></div>
+    <p class="subhead">Sectors ranked by the share of their rated stocks at or above this rating:</p>
+    <div class="secrank" id="r-rank"></div>
+  </section>
+
   <section class="card" id="log">
     <div class="row-between">
       <div><h2>Breadth log</h2><p class="sub" style="margin:0">Newest first. Same columns and colours as the Google Sheet, plus 3M and 6M highs/lows.</p></div>
@@ -187,6 +271,7 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
       <li><b>20 DMA</b> reacts first (early signal); <b>50 DMA</b> confirms the bigger trend. Green = most stocks above (strong), red = most below (weak).</li>
       <li><b>Monthly thrust</b> above zero means more stocks have jumped 25%+ in a month than crashed 25%+: strong momentum.</li>
       <li><b>Extremes matter:</b> too many solid greens in a row means the market is stretched and may pause; long red streaks can mean it is washed out and close to a bounce.</li>
+      <li><b>Copy symbols</b> copies the list (e.g. NABIL,NICA,UPPER) so you can paste it into a watchlist on your charting site.</li>
       <li>Before 2026 fewer stocks were counted (some merged companies are missing from old data), so compare old years with the % columns. NEPSE index values start from Nov 2025.</li>
     </ul>
   </section>
@@ -196,6 +281,7 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     Updated automatically every trading day after market close.
   </footer>
 </div>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 (function () {
@@ -219,12 +305,12 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     return f <= 0.5 ? mix(css("--sig-red"), css("--sig-yellow"), (f - 0.25) / 0.25)
                     : mix(css("--sig-yellow"), css("--sig-green"), (f - 0.5) / 0.25);
   }
-  function diverge(v, scale) {
+  function diverge(v, scale) { // teal = strength, clay = weakness; brighter = stronger reading
     const base = css("--surface-2");
     if (v == null || isNaN(v)) return base;
     const t = Math.min(1, Math.abs(v) / scale);
-    if (v > 0) return mix(base, css("--sig-green"), 0.25 + 0.75 * t);
-    if (v < 0) return mix(base, css("--sig-red"), 0.25 + 0.75 * t);
+    if (v > 0) return mix(base, css("--teal"), 0.18 + 0.82 * t);
+    if (v < 0) return mix(base, css("--clay"), 0.18 + 0.82 * t);
     return base;
   }
   function soften(color) {
@@ -286,6 +372,11 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
       u.appendChild(el("span", { class: "err" }, "Could not load data (" + e.message + "). Try refreshing."));
     });
 
+  fetch("data/stocks.json", { cache: "no-cache" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((j) => { if (j) { state.stocks = j.stocks; state.stocksDate = j.date; renderStockSections(); } })
+    .catch(() => {});
+
   function render() {
     const d = state.rows[0];
     document.getElementById("updated").textContent =
@@ -296,6 +387,7 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     renderViews(); renderRanges(); drawChart();
     renderTiles(d);
     renderRowButtons(); renderTable();
+    if (state.stocks) renderStockSections();
   }
 
   function mood(d) {
@@ -329,7 +421,7 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
       box.appendChild(el("div", { class: "per" }, label));
       const L = el("div", { class: "bar left" }); L.appendChild(el("span", null, String(lo)));
       const li = el("i"); li.style.width = (lo / max) * 100 + "%"; L.appendChild(li); box.appendChild(L);
-      const n = el("div", { class: "net" }, signed(net)); n.style.color = net > 0 ? css("--sig-green") : net < 0 ? css("--sig-red") : ""; box.appendChild(n);
+      const n = el("div", { class: "net" }, signed(net)); n.style.color = net > 0 ? css("--teal") : net < 0 ? css("--clay") : ""; box.appendChild(n);
       const R = el("div", { class: "bar right" }); const ri = el("i"); ri.style.width = (hi / max) * 100 + "%";
       R.appendChild(ri); R.appendChild(el("span", null, String(hi))); box.appendChild(R);
       box.appendChild(el("div", { class: "y" }, signed(y["net" + k])));
@@ -360,31 +452,54 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
       rangesBox.appendChild(b);
     });
     document.getElementById("sess-n").textContent = state.sess;
-    document.getElementById("ramp").style.background = "linear-gradient(90deg," + css("--sig-red") + "," + css("--sig-yellow") + "," + css("--sig-green") + ")";
+    document.getElementById("ramp").style.background = "linear-gradient(90deg," + css("--clay") + "," + css("--surface-2") + "," + css("--teal") + ")";
     const days = state.rows.slice(0, state.sess).reverse();
     const box = document.getElementById("strips"); box.textContent = "";
     const all = state.rows;
     const rowsDef = [
-      ["Net 1-month highs", (d) => diverge(d.net1m, p95abs("net1m", all)), (d) => signed(d.net1m) + " (" + d.hi1m + " highs / " + d.lo1m + " lows)"],
-      ["Net 3-month highs", (d) => diverge(d.net3m, p95abs("net3m", all)), (d) => signed(d.net3m) + " (" + d.hi3m + " / " + d.lo3m + ")"],
-      ["Net 6-month highs", (d) => diverge(d.net6m, p95abs("net6m", all)), (d) => signed(d.net6m) + " (" + d.hi6m + " / " + d.lo6m + ")"],
-      ["Monthly thrust (25% movers)", (d) => diverge(d.thrust, p95abs("thrust", all)), (d) => signed(d.thrust) + " (" + d.up25 + " up / " + d.dn25 + " down)"],
-      ["Above 20-day average", (d) => signal(d.p20), (d) => pct(d.p20)],
-      ["Above 50-day average", (d) => signal(d.p50), (d) => pct(d.p50)],
+      ["Net 1-month highs", (d) => diverge(d.net1m, p95abs("net1m", all))],
+      ["Net 3-month highs", (d) => diverge(d.net3m, p95abs("net3m", all))],
+      ["Net 6-month highs", (d) => diverge(d.net6m, p95abs("net6m", all))],
+      ["Monthly thrust (25% movers)", (d) => diverge(d.thrust, p95abs("thrust", all))],
+      ["Above 20-day average", (d) => diverge(d.p20 - 0.5, 0.35)],
+      ["Above 50-day average", (d) => diverge(d.p50 - 0.5, 0.35)],
     ];
     const host = document.getElementById("sessions");
-    rowsDef.forEach(([label, color, describe]) => {
+    const strips = [];
+    function pick(idx, anchor) {
+      const d = days[idx];
+      strips.forEach((st) => st.querySelectorAll("span.sel").forEach((x) => x.classList.remove("sel")));
+      strips.forEach((st) => st.children[idx] && st.children[idx].classList.add("sel"));
+      const lines = [
+        ["1M highs / lows", d.hi1m + " / " + d.lo1m + "  (net " + signed(d.net1m) + ")"],
+        ["3M highs / lows", d.hi3m + " / " + d.lo3m + "  (net " + signed(d.net3m) + ")"],
+        ["6M highs / lows", d.hi6m + " / " + d.lo6m + "  (net " + signed(d.net6m) + ")"],
+        ["Monthly thrust", signed(d.thrust) + "  (" + d.up25 + " up / " + d.dn25 + " down)"],
+        ["Above 20 DMA", d.a20 + " stocks · " + pct(d.p20)],
+        ["Above 50 DMA", d.a50 + " stocks · " + pct(d.p50)],
+      ];
+      if (d.nepse != null) lines.push(["NEPSE", signed(d.nepse, 2)]);
+      const ro = document.getElementById("readout"); ro.textContent = ""; ro.classList.add("on");
+      ro.appendChild(el("div", { class: "r-date" }, fmtDate(d.date)));
+      const g = el("div", { class: "r-grid" });
+      lines.forEach(([k, v]) => { const row = el("div"); row.appendChild(el("span", { class: "muted" }, k + ": ")); row.appendChild(el("b", null, v)); g.appendChild(row); });
+      ro.appendChild(g);
+      if (anchor) {
+        const r = host.getBoundingClientRect(), cr = anchor.getBoundingClientRect();
+        showTip(host, cr.left - r.left, cr.bottom - r.top + 6, d.date, lines.map(([k, v]) => [k, v]));
+      }
+    }
+    rowsDef.forEach(([label, color]) => {
       box.appendChild(el("div", { class: "strip-label" }, label));
       const strip = el("div", { class: "strip", role: "img", "aria-label": label + " over the last " + days.length + " sessions" });
-      days.forEach((d) => { const sp = el("span"); sp.style.background = color(d); sp._d = d; strip.appendChild(sp); });
-      strip.addEventListener("pointermove", (ev) => {
-        const t = ev.target; if (!t._d) return;
-        const r = host.getBoundingClientRect(), cr = t.getBoundingClientRect();
-        showTip(host, cr.left - r.left, cr.bottom - r.top + 6, t._d.date, [[label, describe(t._d)]]);
-      });
+      days.forEach((d, idx) => { const sp = el("span"); sp.style.background = color(d); sp._i = idx; strip.appendChild(sp); });
+      const handler = (ev) => { const t = ev.target; if (t._i == null) return; pick(t._i, ev.pointerType === "mouse" ? t : null); };
+      strip.addEventListener("pointermove", handler);
+      strip.addEventListener("pointerdown", handler);
       strip.addEventListener("pointerleave", hideTip);
       box.appendChild(strip);
-      if (strip.clientWidth / days.length < 4) strip.classList.add("dense"); // no gaps when bars are very thin
+      strips.push(strip);
+      if (strip.clientWidth / days.length < 4) strip.classList.add("dense");
     });
     const dates = el("div", { class: "strip-dates" });
     dates.appendChild(el("span", null, fmtDate(days[0].date)));
@@ -496,7 +611,7 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     });
     const off = () => { hideTip(); hair.setAttribute("opacity", 0); dots.forEach((dd) => dd.setAttribute("opacity", 0)); };
     hit.addEventListener("pointerleave", off); hit.addEventListener("blur", off);
-    host.insertBefore(svg, tip);
+    host.insertBefore(svg, host.firstChild);
 
     const lg = document.getElementById("chart-legend"); lg.textContent = "";
     view.series.forEach(([k, v, name]) => {
@@ -509,7 +624,6 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
       });
       lg.appendChild(b);
     });
-    if (view.series.length > 1) lg.appendChild(el("span", { class: "muted" }, "· click a name to hide or show it"));
   }
   let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => state.rows && drawChart(), 150); });
 
@@ -541,6 +655,150 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     tile("Turnover", d.turnover != null ? d.turnover.toFixed(2) : "–", "Rs Arba (billion)");
     tile("Big moves today", "▲" + d.up45 + "  ▼" + d.dn45, "stocks up / down 4.5%+");
     tile("20%+ in 5 days", "▲" + d.up5 + "  ▼" + d.dn5, "stocks up / down 20%+");
+  }
+
+
+  // ---------- stock lists (sectors, broad momentum, 52-week highs, RS rating) ----------
+  const toastEl = document.getElementById("toast");
+  function toast(msg) { toastEl.textContent = msg; toastEl.classList.add("on"); setTimeout(() => toastEl.classList.remove("on"), 1600); }
+  function copySymbols(list) {
+    const text = list.map((x) => x.s).join(",");
+    const done = () => toast(list.length + " symbols copied");
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => fallback());
+    else fallback();
+    function fallback() { const ta = el("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch (e) {} ta.remove(); }
+  }
+  function downloadCSV(name, list, extra) {
+    const cols = ["Symbol", "Company", "Sector", "Close", "Change %"].concat(extra.map((e) => e[0]));
+    const rows = list.map((x) => [x.s, x.n, x.sec, x.c, x.chg].concat(extra.map((e) => e[1](x))));
+    const csv = [cols].concat(rows).map((r) => r.map((v) => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"').join(",")).join("\n");
+    const a = el("a", { download: name + "_" + state.stocksDate + ".csv" });
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); document.body.appendChild(a); a.click(); a.remove();
+  }
+  function actionButtons(boxId, getList, name, extra) {
+    const box = document.getElementById(boxId); box.textContent = "";
+    const c = el("button", { class: "btn", type: "button" }, "⧉ Copy symbols");
+    c.addEventListener("click", () => copySymbols(getList()));
+    const d = el("button", { class: "btn", type: "button" }, "⬇ Download list (CSV)");
+    d.addEventListener("click", () => downloadCSV(name, getList(), extra));
+    box.appendChild(c); box.appendChild(d);
+  }
+  function chips(boxId, list, label) {
+    const box = document.getElementById(boxId); box.textContent = "";
+    if (!list.length) { box.appendChild(el("span", { class: "empty" }, "No stocks match right now.")); return; }
+    list.forEach((x) => {
+      const c = el("span", { class: "chip", title: x.n + " · " + x.sec + " · close " + x.c + (x.chg != null ? " (" + signed(x.chg, 2) + "%)" : "") });
+      c.appendChild(document.createTextNode(x.s));
+      if (label) c.appendChild(el("small", null, label(x)));
+      box.appendChild(c);
+    });
+  }
+  function sectors() { return [...new Set(state.stocks.map((x) => x.sec))].sort(); }
+  function fillSelect(id, options, value) {
+    const sel = document.getElementById(id);
+    if (sel.options.length === 0) options.forEach(([v, t]) => { const o = el("option", { value: String(v) }, t); sel.appendChild(o); });
+    if (value != null && !sel._init) { sel.value = String(value); sel._init = true; }
+    return sel;
+  }
+  function sectorRank(boxId, groups, pass, pale, onPick, nameLimit) {
+    const box = document.getElementById(boxId); box.textContent = "";
+    const rows = Object.keys(groups).map((sec) => {
+      const all = groups[sec], hit = all.filter(pass);
+      return { sec, all, hit, share: hit.length / all.length, pale: pale ? all.filter(pale).length / all.length : 0 };
+    }).sort((a, b) => b.share - a.share || b.pale - a.pale || a.sec.localeCompare(b.sec));
+    rows.forEach((r) => {
+      const nm = el("div", { class: "nm", role: "button", tabindex: "0" });
+      nm.appendChild(document.createTextNode("▸ " + r.sec + " ")); nm.appendChild(el("small", null, "· " + r.all.length + " stocks"));
+      if (onPick) { nm.addEventListener("click", () => onPick(r.sec)); nm.addEventListener("keydown", (e) => { if (e.key === "Enter") onPick(r.sec); }); }
+      const tr = el("div", { class: "track" });
+      if (pale) { const p = el("i", { class: "pale" }); p.style.width = r.pale * 100 + "%"; tr.appendChild(p); }
+      const dk = el("i", { class: "dark" }); dk.style.width = r.share * 100 + "%"; tr.appendChild(dk);
+      box.appendChild(nm); box.appendChild(tr);
+      box.appendChild(el("div", { class: "ct" }, r.hit.length + " of " + r.all.length + " · " + Math.round(r.share * 100) + "%"));
+      if (nameLimit) {
+        const names = r.hit.length ? r.hit.slice(0, nameLimit).map((x) => x.s).join(" · ") + (r.hit.length > nameLimit ? " …" : "")
+          : (pale && r.all.filter(pale).length ? "none yet at 3M — " + r.all.filter(pale).length + " at 1M highs" : "");
+        if (names) box.appendChild(el("div", { class: "names" }, names));
+      }
+    });
+  }
+  function bySector(list) { const g = {}; list.forEach((x) => (g[x.sec] = g[x.sec] || []).push(x)); return g; }
+
+  function renderStockSections() {
+    const st = state.stocks;
+    // where new highs cluster
+    const g = bySector(st);
+    const hit3m = (x) => x.hi.includes(60), hit1m = (x) => x.hi.includes(20);
+    sectorRank("cl", g, hit3m, hit1m, (sec) => { document.getElementById("m-sec").value = sec; renderMomentum(); document.getElementById("momentum").scrollIntoView({ behavior: "smooth" }); }, 12);
+    actionButtons("cl-actions", () => st.filter(hit3m), "nepse_3m_highs", [["3M high today", (x) => "yes"]]);
+
+    // broad momentum
+    const secOpts = [["", "All stocks"]].concat(sectors().map((x) => [x, x]));
+    fillSelect("m-sec", secOpts, "");
+    fillSelect("m-gain", [10, 15, 20, 25, 30, 40, 50, 75, 100].map((v) => [v, v + "%"]), 30);
+    fillSelect("m-days", [5, 10, 20, 30, 60, 90, 125, 180, 250].map((v) => [v, v + " trading days"]), 90);
+    ["m-sec", "m-gain", "m-days"].forEach((id) => (document.getElementById(id).onchange = renderMomentum));
+    renderMomentum();
+
+    // 52-week highs
+    fillSelect("h-mode", [["250", "New 52-week highs today"], ["120", "New 6-month highs today"], ["60", "New 3-month highs today"], ["20", "New 1-month highs today"], ["near", "Within a % of the 52-week high"]], "250");
+    fillSelect("h-sec", [["", "All sectors"]].concat(sectors().map((x) => [x, x])), "");
+    ["h-mode", "h-sec"].forEach((id) => (document.getElementById(id).onchange = renderHighs));
+    document.getElementById("h-pct").oninput = renderHighs;
+    renderHighs();
+
+    // RS rating
+    fillSelect("r-sec", [["", "All sectors"]].concat(sectors().map((x) => [x, x])), "");
+    document.getElementById("r-sec").onchange = renderRS;
+    document.getElementById("r-min").oninput = renderRS;
+    renderRS();
+  }
+
+  function renderMomentum() {
+    const sec = document.getElementById("m-sec").value;
+    const gain = +document.getElementById("m-gain").value, days = document.getElementById("m-days").value;
+    const pool = state.stocks.filter((x) => x.ret[days] != null);
+    const scope = pool.filter((x) => !sec || x.sec === sec);
+    const pass = (x) => x.ret[days] >= gain;
+    const list = scope.filter(pass).sort((a, b) => b.ret[days] - a.ret[days]);
+    const res = document.getElementById("m-result"); res.textContent = "";
+    res.appendChild(el("b", null, list.length + " of " + scope.length));
+    res.appendChild(document.createTextNode(" " + (sec || "stocks") + " (" + Math.round((list.length / Math.max(1, scope.length)) * 100) + "%) gained at least " + gain + "% over the last " + days + " trading days."));
+    chips("m-list", list, (x) => "+" + x.ret[days].toFixed(0) + "%");
+    actionButtons("m-actions", () => list, "nepse_momentum_" + gain + "pct_" + days + "d", [["Gain % over " + days + " days", (x) => x.ret[days]]]);
+    sectorRank("m-rank", bySector(pool), pass, null, (s2) => { document.getElementById("m-sec").value = s2; renderMomentum(); document.getElementById("momentum").scrollIntoView({ behavior: "smooth" }); }, 0);
+  }
+
+  function renderHighs() {
+    const mode = document.getElementById("h-mode").value, sec = document.getElementById("h-sec").value;
+    const within = Math.max(0.5, Math.min(30, +document.getElementById("h-pct").value || 5));
+    document.getElementById("h-pct").parentElement.style.display = mode === "near" ? "" : "none";
+    const scope = state.stocks.filter((x) => !sec || x.sec === sec);
+    let list, text;
+    if (mode === "near") {
+      list = scope.filter((x) => x.fromHigh != null && x.days >= 250 && x.fromHigh >= -within).sort((a, b) => b.fromHigh - a.fromHigh);
+      text = " stocks are within " + within + "% of their 52-week high.";
+    } else {
+      const w = +mode; list = scope.filter((x) => x.hi.includes(w)).sort((a, b) => (b.chg || 0) - (a.chg || 0));
+      text = " stocks are at a new " + { 250: "52-week", 120: "6-month", 60: "3-month", 20: "1-month" }[w] + " high today.";
+    }
+    const res = document.getElementById("h-result"); res.textContent = "";
+    res.appendChild(el("b", null, String(list.length))); res.appendChild(document.createTextNode((sec ? " " + sec : "") + text));
+    chips("h-list", list, (x) => (mode === "near" ? (x.fromHigh === 0 ? "at high" : x.fromHigh.toFixed(1) + "%") : x.chg != null ? signed(x.chg, 1) + "%" : ""));
+    actionButtons("h-actions", () => list, "nepse_highs", [["% from 52W high", (x) => x.fromHigh]]);
+  }
+
+  function renderRS() {
+    const min = Math.max(1, Math.min(99, +document.getElementById("r-min").value || 80)), sec = document.getElementById("r-sec").value;
+    const rated = state.stocks.filter((x) => x.rs != null);
+    const scope = rated.filter((x) => !sec || x.sec === sec);
+    const list = scope.filter((x) => x.rs >= min).sort((a, b) => b.rs - a.rs || a.s.localeCompare(b.s));
+    const res = document.getElementById("r-result"); res.textContent = "";
+    res.appendChild(el("b", null, list.length + " of " + scope.length));
+    res.appendChild(document.createTextNode(" rated" + (sec ? " " + sec : "") + " stocks have an RS rating of " + min + " or higher."));
+    chips("r-list", list, (x) => String(x.rs));
+    actionButtons("r-actions", () => list, "nepse_rs_" + min, [["RS rating", (x) => x.rs], ["1-year return %", (x) => x.ret["250"]]]);
+    sectorRank("r-rank", bySector(rated), (x) => x.rs >= min, null, (s2) => { document.getElementById("r-sec").value = s2; renderRS(); }, 0);
   }
 
   const COLS = [

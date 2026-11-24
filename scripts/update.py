@@ -11,6 +11,7 @@ Universe = normal company shares only: instrumentType "Equity", active, not Mutu
 Promoter shares, mutual funds and debentures are excluded.
 """
 import csv
+import json
 import os
 import sys
 import time
@@ -24,6 +25,7 @@ UNIVERSE = os.path.join(DATA, "universe.csv")
 BREADTH = os.path.join(DATA, "breadth.csv")
 HISTORY_PRICES = os.path.join(DATA, "history_prices.csv")      # older years, see import_history.py
 HISTORY_TURNOVER = os.path.join(DATA, "history_turnover.csv")
+STOCKS_FILE = os.path.join(DATA, "stocks.json")               # per-stock snapshot for the website lists
 OUTPUT_START = "2020-01-01"
 
 BACKFILL_START = date(2026, 1, 1)
@@ -220,6 +222,9 @@ def compute():
     last_close = {}
     out = []
     adjustments = 0
+    last_highs = {w: set() for w in WINDOWS}
+    last_lows = {w: set() for w in WINDOWS}
+    traded_days = defaultdict(list)  # symbol -> market-day indexes it traded on
     for i, d in enumerate(dates):
         today = by_date[d]
         for s, r in today.items():
@@ -236,6 +241,7 @@ def compute():
                 adjustments += 1
             last_close[s] = num(r["close"])
             first_day.setdefault(s, i)
+            traded_days[s].append(i)
         for s, c in last_close.items():
             closes[s].append(c)
 
@@ -259,8 +265,14 @@ def compute():
                 if first_day[s] <= i - (w - 1):
                     win = [e for e in hist if e[0] > i - w]
                     if win:
-                        nh[w] += h > max(e[1] for e in win)
-                        nl[w] += l < min(e[2] for e in win)
+                        is_hi, is_lo = h > max(e[1] for e in win), l < min(e[2] for e in win)
+                        nh[w] += is_hi
+                        nl[w] += is_lo
+                        if i == len(dates) - 1:
+                            if is_hi:
+                                last_highs[w].add(s)
+                            if is_lo:
+                                last_lows[w].add(s)
             hist.append([i, h, l])
 
         u5 = d5 = u20 = d20 = a20 = b20 = a50 = b50 = counted = 0
@@ -306,10 +318,67 @@ def compute():
             nh[120], nl[120], nh[120] - nl[120],
         ])
 
+    if dates:
+        write_stocks(dates, by_date, universe, closes, hilo, first_day, traded_days, last_highs, last_lows)
     out.reverse()  # newest first, like the sheet
     write_csv(BREADTH, BREADTH_HEADER, out)
     print(f"breadth: {len(out)} rows, {out[-1][0] if out else '-'} .. {out[0][0] if out else '-'}, "
           f"{adjustments} bonus/right price adjustments applied")
+
+
+RETURN_DAYS = (5, 10, 20, 30, 60, 90, 125, 180, 250)
+
+
+def write_stocks(dates, by_date, universe, closes, hilo, first_day, traded_days, last_highs, last_lows):
+    """Snapshot of every current stock on the latest market day, for the website's stock lists."""
+    names = {r["symbol"]: (r["name"], r["sector"]) for r in read_csv(UNIVERSE)}
+    i = len(dates) - 1
+    today = by_date[dates[-1]]
+    stocks = []
+    for s in sorted(universe):
+        cl = closes.get(s)
+        if not cl:
+            continue
+        c = cl[-1]
+        ret = {}
+        for n in RETURN_DAYS:
+            if len(cl) > n and cl[-1 - n]:
+                ret[str(n)] = round((c / cl[-1 - n] - 1) * 100, 2)
+        hist = [e for e in hilo.get(s, []) if e[0] > i - 250]
+        high52 = max((e[1] for e in hist), default=None)
+        r = today.get(s)
+        chg = None
+        if r and num(r["prev_close"]):
+            chg = round((num(r["close"]) / num(r["prev_close"]) - 1) * 100, 2)
+        recent = sum(1 for d in traded_days.get(s, []) if d > i - 60)
+        stocks.append({
+            "s": s, "n": names.get(s, ("", ""))[0], "sec": names.get(s, ("", ""))[1],
+            "c": round(c, 2), "chg": chg, "ret": ret,
+            "fromHigh": round((c / high52 - 1) * 100, 2) if high52 else None,
+            "hi": [w for w in WINDOWS if s in last_highs[w]],
+            "lo": [w for w in WINDOWS if s in last_lows[w]],
+            "a20": len(cl) >= 20 and c > sum(cl[-20:]) / 20,
+            "a50": len(cl) >= 50 and c > sum(cl[-50:]) / 50,
+            "days": i - first_day.get(s, i) + 1, "traded60": recent,
+        })
+    # RS rating 1-99: weighted 12-month performance, latest 3 months counting double,
+    # ranked against every stock listed for a full year that traded on 20+ of the last 60 days
+    def perf(st):
+        r = st["ret"]
+        if "250" not in r or st["traded60"] < 20:
+            return None
+        q1 = (1 + r["60"] / 100)
+        q2 = (1 + r["125"] / 100) / q1
+        q3 = (1 + r["180"] / 100) / (1 + r["125"] / 100)
+        q4 = (1 + r["250"] / 100) / (1 + r["180"] / 100)
+        return 2 * q1 + q2 + q3 + q4
+    rated = sorted((perf(st), st["s"]) for st in stocks if perf(st) is not None)
+    rank = {sym: k for k, (_, sym) in enumerate(rated)}
+    for st in stocks:
+        st["rs"] = max(1, min(99, int(rank[st["s"]] / (len(rated) - 1) * 98) + 1)) if st["s"] in rank and len(rated) > 1 else None
+    with open(STOCKS_FILE, "w", encoding="utf-8") as f:
+        json.dump({"date": dates[-1], "stocks": stocks}, f, ensure_ascii=False, separators=(",", ":"))
+    print(f"stocks: {len(stocks)} written, {len(rated)} with RS rating")
 
 
 if __name__ == "__main__":
