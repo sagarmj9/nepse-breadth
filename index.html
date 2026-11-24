@@ -16,93 +16,93 @@
   --text-secondary: #52514e;
   --text-muted: #7a7973;
   --grid: #e7e5df;
-  --series-1: #2a78d6;   /* % above 20 DMA */
-  --series-2: #eb6834;   /* % above 50 DMA */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
   --sig-red: #ea4335;
   --sig-yellow: #fbbc04;
   --sig-green: #34a853;
   --accent: #111827;
-  --mix: 0.78;           /* how strong table cell colours are */
+  --mix: 0.78;
 }
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
     --bg: #121211; --surface-1: #1a1a19; --surface-2: #232321; --border: #33322f;
     --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #8f8e86; --grid: #2c2b29;
-    --series-1: #3987e5; --series-2: #d95926; --accent: #f0efec; --mix: 0.62;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+    --accent: #f0efec; --mix: 0.62;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #121211; --surface-1: #1a1a19; --surface-2: #232321; --border: #33322f;
   --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #8f8e86; --grid: #2c2b29;
-  --series-1: #3987e5; --series-2: #d95926; --accent: #f0efec; --mix: 0.62;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+  --accent: #f0efec; --mix: 0.62;
 }
 * { box-sizing: border-box; }
-body {
-  margin: 0; background: var(--bg); color: var(--text-primary);
-  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-}
+body { margin: 0; background: var(--bg); color: var(--text-primary);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 18px 40px; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .brand h1 { margin: 0; font-size: 24px; letter-spacing: -0.01em; }
 .brand p { margin: 2px 0 0; color: var(--text-secondary); font-size: 13px; }
 .brand .by { color: var(--text-muted); font-weight: 500; }
-.btn {
-  border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary);
-  border-radius: 8px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer;
-}
+.btn { border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary);
+  border-radius: 8px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; }
 .btn:hover { background: var(--surface-2); }
 .btn[aria-pressed="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 nav.jump { display: flex; gap: 14px; margin: 14px 0 4px; font-size: 13px; flex-wrap: wrap; }
 nav.jump a { color: var(--text-secondary); text-decoration: none; }
 nav.jump a:hover { color: var(--text-primary); text-decoration: underline; }
-section.card {
-  background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
-  padding: 18px; margin-top: 18px;
-}
-section.card h2 { margin: 0 0 2px; font-size: 17px; }
+section.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-top: 18px; }
+section.card h2 { margin: 0 0 2px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; }
 .sub { margin: 0 0 14px; color: var(--text-secondary); font-size: 13px; }
+.headline .word { font-size: 13px; font-weight: 700; letter-spacing: .08em; padding: 2px 10px; border-radius: 999px; display: inline-block; }
+.headline p { font-size: 21px; line-height: 1.45; margin: 10px 0 0; }
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; }
 .tile { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; }
 .tile .label { font-size: 12px; color: var(--text-secondary); }
-.tile .value { font-size: 28px; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.tile .value { font-size: 26px; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .tile .note { font-size: 12px; color: var(--text-muted); }
-.badge {
-  display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600;
-  padding: 1px 8px; border-radius: 999px; margin-top: 4px;
-}
+.badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; margin-top: 4px; }
 .badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .55; }
-.verdict { font-size: 14px; margin: 14px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--surface-2); }
-.heat { overflow-x: auto; }
-.heat-grid { display: grid; grid-template-columns: 70px 1fr; row-gap: 6px; align-items: center; min-width: 640px; }
-.heat-row { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; }
-.heat-cell { height: 26px; border-radius: 4px; cursor: default; outline-offset: 1px; }
-.heat-cell:focus { outline: 2px solid var(--text-primary); }
-.heat-label { font-size: 12px; color: var(--text-secondary); }
-.heat-dates { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
+.hl { display: grid; grid-template-columns: 44px 1fr 64px 1fr 84px; align-items: center; gap: 6px 10px; font-variant-numeric: tabular-nums; }
+.hl .hdr { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+.hl .per { font-weight: 700; }
+.hl .net { text-align: center; font-weight: 700; font-size: 18px; }
+.hl .y { text-align: right; color: var(--text-secondary); font-size: 13px; }
+.bar { display: flex; align-items: center; gap: 6px; height: 22px; font-size: 12px; color: var(--text-secondary); }
+.bar.left { justify-content: flex-end; }
+.bar i { display: block; height: 18px; border-radius: 4px; min-width: 2px; }
+.bar.left i { background: var(--sig-red); }
+.bar.right i { background: var(--sig-green); }
+.strips { display: grid; grid-template-columns: 150px 1fr; gap: 8px 12px; align-items: center; }
+.strip-label { font-size: 12.5px; color: var(--text-secondary); line-height: 1.2; }
+.strip { display: flex; gap: 1px; height: 26px; overflow: hidden; }
+.strip.dense { gap: 0; }
+.strip span { flex: 1 1 0; border-radius: 1px; min-width: 0; }
+.strip-dates { grid-column: 2; display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
 .legend { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); margin-top: 10px; }
-.ramp { width: 160px; height: 10px; border-radius: 3px; background: linear-gradient(90deg, var(--sig-red), var(--sig-yellow), var(--sig-green)); }
-.key { display: inline-flex; align-items: center; gap: 6px; }
+.ramp { width: 140px; height: 10px; border-radius: 3px; }
+.key { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 2px 0; font: inherit; font-size: 12px; color: var(--text-secondary); cursor: pointer; }
 .key i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.key[aria-pressed="false"] { opacity: .4; text-decoration: line-through; }
 .controls { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
 .chart { position: relative; }
 .chart svg { display: block; width: 100%; height: 320px; }
-.tooltip {
-  position: absolute; pointer-events: none; background: var(--surface-1); border: 1px solid var(--border);
+.tooltip { position: absolute; pointer-events: none; background: var(--surface-1); border: 1px solid var(--border);
   border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.12);
-  min-width: 150px; opacity: 0; transition: opacity .08s; z-index: 5;
-}
+  min-width: 150px; opacity: 0; transition: opacity .08s; z-index: 5; }
 .tooltip .t-date { color: var(--text-secondary); margin-bottom: 4px; }
 .tooltip .t-row { display: flex; justify-content: space-between; gap: 12px; }
 .tooltip strong { font-variant-numeric: tabular-nums; }
 .table-wrap { overflow: auto; max-height: 640px; border: 1px solid var(--border); border-radius: 10px; }
 table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
 th, td { padding: 6px 8px; text-align: center; white-space: nowrap; border-bottom: 1px solid var(--border); }
-thead th {
-  position: sticky; top: 0; background: var(--surface-2); color: var(--text-primary); font-weight: 600;
-  white-space: normal; min-width: 72px; font-size: 11.5px; line-height: 1.25; z-index: 2;
-}
+thead th { position: sticky; top: 0; background: var(--surface-2); font-weight: 600; white-space: normal; min-width: 64px; font-size: 11.5px; line-height: 1.25; z-index: 2; }
 thead tr.groups th { top: 0; font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .04em; }
 thead tr.cols th { top: 26px; }
 tbody td:first-child, thead th:first-child { position: sticky; left: 0; background: var(--surface-1); z-index: 1; font-weight: 600; }
@@ -114,6 +114,13 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
 .help { font-size: 13px; color: var(--text-secondary); }
 .help li { margin: 3px 0; }
 .err { color: var(--sig-red); }
+@media (max-width: 560px) {
+  .headline p { font-size: 17px; }
+  .hl { grid-template-columns: 34px 1fr 52px 1fr; }
+  .hl .y { display: none; }
+  .strips { grid-template-columns: 92px 1fr; }
+  .strip-label { font-size: 11px; }
+}
 </style>
 </head>
 <body>
@@ -126,39 +133,47 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     <button class="btn" id="theme" type="button" aria-label="Switch light or dark mode">◐ Theme</button>
   </header>
   <nav class="jump" aria-label="Sections">
-    <a href="#today">Today</a><a href="#heatmap">Last 60 sessions</a><a href="#trend">Trend</a>
-    <a href="#log">Breadth log</a><a href="#howto">How to read</a>
+    <a href="#highs">Highs vs lows</a><a href="#sessions">Sessions</a><a href="#trend">Chart</a>
+    <a href="#today">Today's numbers</a><a href="#log">Breadth log</a><a href="#howto">How to read</a>
   </nav>
 
-  <section class="card" id="today">
-    <h2>Market today</h2>
-    <p class="sub" id="today-sub">Normal company shares only (no mutual funds, debentures or promoter shares).</p>
-    <div class="tiles" id="tiles"></div>
-    <p class="verdict" id="verdict"></p>
+  <section class="card headline" id="headline">
+    <span class="word" id="word">…</span>
+    <p id="summary"></p>
   </section>
 
-  <section class="card" id="heatmap">
-    <h2>The last 60 sessions</h2>
-    <p class="sub">One square per trading day, coloured by the share of stocks above the moving average: green = most stocks above (strong), yellow = about half, red = most below (weak).</p>
-    <div class="heat"><div class="heat-grid" id="heat"></div></div>
-    <div class="legend"><span>Weak</span><span class="ramp"></span><span>Strong</span>
-      <span class="muted">(25% red · 50% yellow · 75% green)</span></div>
+  <section class="card" id="highs">
+    <h2>New highs vs new lows</h2>
+    <p class="sub">How many stocks traded above their highest price (right) or below their lowest price (left) of the last 1, 3 and 6 months and 52 weeks. Uses the day's intraday high and low, adjusted for bonus shares.</p>
+    <div class="hl" id="hl"></div>
+  </section>
+
+  <section class="card" id="sessions">
+    <h2>The last <span id="sess-n">125</span> sessions</h2>
+    <p class="sub">One thin bar per trading day, oldest on the left, today on the right. Green = broad strength, red = broad weakness. Monthly thrust = stocks up 25%+ in 20 sessions minus stocks down 25%+.</p>
+    <div class="controls" id="sess-ranges"></div>
+    <div class="strips" id="strips"></div>
+    <div class="legend"><span>Weak</span><span class="ramp" id="ramp"></span><span>Strong</span></div>
   </section>
 
   <section class="card" id="trend">
-    <h2>% of stocks above 20 DMA and 50 DMA</h2>
-    <p class="sub">Above 75% the market is stretched (overheated); below 25% it is washed out. Turning points often come near these extremes.</p>
+    <h2>Chart</h2>
+    <p class="sub" id="chart-sub"></p>
+    <div class="controls" id="views"></div>
     <div class="controls" id="ranges"></div>
     <div class="chart" id="chart"><div class="tooltip" id="tip" role="status" aria-live="polite"></div></div>
-    <div class="legend">
-      <span class="key"><i style="background:var(--series-1)"></i>% above 20 DMA (early signal)</span>
-      <span class="key"><i style="background:var(--series-2)"></i>% above 50 DMA</span>
-    </div>
+    <div class="legend" id="chart-legend"></div>
+  </section>
+
+  <section class="card" id="today">
+    <h2>Today's numbers</h2>
+    <p class="sub">Normal company shares only (no mutual funds, debentures or promoter shares).</p>
+    <div class="tiles" id="tiles"></div>
   </section>
 
   <section class="card" id="log">
     <div class="row-between">
-      <div><h2>Breadth log</h2><p class="sub" style="margin:0">Newest first. Same columns and colours as the Google Sheet.</p></div>
+      <div><h2>Breadth log</h2><p class="sub" style="margin:0">Newest first. Same columns and colours as the Google Sheet, plus 3M and 6M highs/lows.</p></div>
       <div class="controls" id="rows" style="margin:0"></div>
     </div>
     <div class="table-wrap"><table id="table"></table></div>
@@ -168,11 +183,10 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
   <section class="card" id="howto">
     <h2>How to read it</h2>
     <ul class="help">
-      <li><b>20 DMA</b> reacts first (early signal); <b>50 DMA</b> confirms the bigger trend.</li>
-      <li>When most stocks are above their DMAs (green), the market is healthy. When most are below (red), it is weak.</li>
+      <li><b>New highs vs new lows:</b> more stocks making new highs than new lows (positive net) means buyers are in control. The 1-month row reacts first; 6-month and 52-week confirm a real trend.</li>
+      <li><b>20 DMA</b> reacts first (early signal); <b>50 DMA</b> confirms the bigger trend. Green = most stocks above (strong), red = most below (weak).</li>
+      <li><b>Monthly thrust</b> above zero means more stocks have jumped 25%+ in a month than crashed 25%+: strong momentum.</li>
       <li><b>Extremes matter:</b> too many solid greens in a row means the market is stretched and may pause; long red streaks can mean it is washed out and close to a bounce.</li>
-      <li><b>Up/Down 4.5% today</b> and <b>20% in 5 days</b> show how strong buying or selling pressure is.</li>
-      <li><b>52W net</b> = new 52-week highs minus new 52-week lows. Positive and rising is healthy.</li>
       <li>Before 2026 fewer stocks were counted (some merged companies are missing from old data), so compare old years with the % columns. NEPSE index values start from Nov 2025.</li>
     </ul>
   </section>
@@ -186,50 +200,51 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
 <script>
 (function () {
   "use strict";
-
-  // ---------- theme toggle (remembered per browser; storage may be unavailable) ----------
   const root = document.documentElement;
   try { const t = localStorage.getItem("theme"); if (t) root.setAttribute("data-theme", t); } catch (e) {}
   document.getElementById("theme").addEventListener("click", function () {
-    const dark = getComputedStyle(root).colorScheme === "dark";
-    const next = dark ? "light" : "dark";
+    const next = getComputedStyle(root).colorScheme === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
     try { localStorage.setItem("theme", next); } catch (e) {}
-    if (state.rows) { drawChart(); }
+    if (state.rows) render();
   });
 
-  // ---------- helpers ----------
   const css = (v) => getComputedStyle(root).getPropertyValue(v).trim();
   function hexToRgb(h) { h = h.replace("#", ""); return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); }
-  function mix(a, b, t) { const A = hexToRgb(a), B = hexToRgb(b); return "rgb(" + A.map((x, i) => Math.round(x + (B[i] - x) * t)).join(",") + ")"; }
-  // red (<=25%) -> yellow (50%) -> green (>=75%)
+  function toRgb(c) { return c.startsWith("#") ? hexToRgb(c) : c.match(/\d+/g).map(Number); }
+  function mix(a, b, t) { const A = toRgb(a), B = toRgb(b); return "rgb(" + A.map((x, i) => Math.round(x + (B[i] - x) * t)).join(",") + ")"; }
   function signal(frac) {
     if (frac == null || isNaN(frac)) return null;
     const f = Math.max(0.25, Math.min(0.75, frac));
     return f <= 0.5 ? mix(css("--sig-red"), css("--sig-yellow"), (f - 0.25) / 0.25)
                     : mix(css("--sig-yellow"), css("--sig-green"), (f - 0.5) / 0.25);
   }
-  function soften(color) { // blend a cell colour toward the surface so text stays readable
-    const m = parseFloat(css("--mix"));
-    const rgb = color.startsWith("#") ? hexToRgb(color) : color.match(/\d+/g).map(Number);
-    const s = hexToRgb(css("--surface-1"));
+  function diverge(v, scale) {
+    const base = css("--surface-2");
+    if (v == null || isNaN(v)) return base;
+    const t = Math.min(1, Math.abs(v) / scale);
+    if (v > 0) return mix(base, css("--sig-green"), 0.25 + 0.75 * t);
+    if (v < 0) return mix(base, css("--sig-red"), 0.25 + 0.75 * t);
+    return base;
+  }
+  function soften(color) {
+    const m = parseFloat(css("--mix")), rgb = toRgb(color), s = hexToRgb(css("--surface-1"));
     return "rgb(" + rgb.map((x, i) => Math.round(s[i] + (x - s[i]) * m)).join(",") + ")";
   }
-  function inkFor(bg) { // black or white text, whichever reads better on this background
-    const c = bg.startsWith("#") ? hexToRgb(bg) : bg.match(/\d+/g).map(Number);
-    const L = (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255;
+  function inkFor(bg) {
+    const c = toRgb(bg); const L = (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255;
     return L > 0.5 ? "#0b0b0b" : "#f5f5f3";
   }
   const fmtDate = (d) => d.slice(8, 10) + "/" + d.slice(5, 7) + "/" + d.slice(0, 4);
   const pct = (x) => (x == null || isNaN(x) ? "–" : (x * 100).toFixed(1) + "%");
-  const signed = (x, dp) => (x == null || isNaN(x) ? "–" : (x > 0 ? "+" : "") + x.toFixed(dp || 0));
+  const signed = (x, dp) => (x == null || isNaN(x) ? "–" : (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x).toFixed(dp || 0));
   function el(tag, attrs, text) {
     const e = document.createElement(tag);
     if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
     if (text != null) e.textContent = text;
     return e;
   }
-  function parseCSV(text) { // handles quoted fields
+  function parseCSV(text) {
     const rows = []; let row = [], f = "", q = false;
     for (let i = 0; i < text.length; i++) {
       const c = text[i];
@@ -243,9 +258,12 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     return rows;
   }
   const num = (v) => (v === "" || v == null ? null : parseFloat(v));
+  function p95abs(field, rows) {
+    const v = rows.map((r) => Math.abs(r[field])).filter((x) => x != null && !isNaN(x)).sort((a, b) => a - b);
+    return Math.max(1, v[Math.floor(v.length * 0.95)] || 1);
+  }
 
-  // ---------- data ----------
-  const state = { rows: null, range: "1Y", show: 30 };
+  const state = { rows: null, range: "1Y", show: 30, sess: 125, view: "highs", hidden: {} };
   fetch("data/breadth.csv", { cache: "no-cache" })
     .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
     .then((text) => {
@@ -254,128 +272,146 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
         date: r[0], up45: num(r[1]), dn45: num(r[2]), up5: num(r[3]), dn5: num(r[4]),
         a20: num(r[5]), b20: num(r[6]), a50: num(r[7]), b50: num(r[8]),
         turnover: num(r[9]), nepse: num(r[10]), p20: num(r[11]) / 100, p50: num(r[12]) / 100,
-        up25: num(r[13]), dn25: num(r[14]), thrust: num(r[15]), hi1m: num(r[16]), lo1m: num(r[17]),
-        net1m: num(r[18]), hi52: num(r[19]), lo52: num(r[20]), net52: num(r[21]),
+        up25: num(r[13]), dn25: num(r[14]), thrust: num(r[15]),
+        hi1m: num(r[16]), lo1m: num(r[17]), net1m: num(r[18]),
+        hi52: num(r[19]), lo52: num(r[20]), net52: num(r[21]),
         close: num(r[22]), counted: num(r[23]),
-      })); // newest first
+        hi3m: num(r[24]), lo3m: num(r[25]), net3m: num(r[26]),
+        hi6m: num(r[27]), lo6m: num(r[28]), net6m: num(r[29]),
+      }));
       render();
     })
     .catch((e) => {
-      document.getElementById("updated").innerHTML = "";
-      document.getElementById("updated").appendChild(el("span", { class: "err" }, "Could not load data (" + e.message + "). Try refreshing."));
+      const u = document.getElementById("updated"); u.textContent = "";
+      u.appendChild(el("span", { class: "err" }, "Could not load data (" + e.message + "). Try refreshing."));
     });
 
   function render() {
-    const latest = state.rows[0];
+    const d = state.rows[0];
     document.getElementById("updated").textContent =
-      "Latest market day: " + fmtDate(latest.date) + " · " + state.rows.length + " trading days since " + fmtDate(state.rows[state.rows.length - 1].date);
-    renderTiles(latest);
-    renderHeat();
-    renderRanges();
-    drawChart();
-    renderRowButtons();
-    renderTable();
+      "Latest market day: " + fmtDate(d.date) + " · " + (d.counted || "") + " stocks · history since " + fmtDate(state.rows[state.rows.length - 1].date);
+    renderHeadline(d);
+    renderHighsLows();
+    renderSessions();
+    renderViews(); renderRanges(); drawChart();
+    renderTiles(d);
+    renderRowButtons(); renderTable();
   }
 
-  // ---------- today ----------
-  function status(frac) {
-    if (frac >= 0.75) return ["Overheated", "--sig-green"];
-    if (frac >= 0.55) return ["Strong", "--sig-green"];
-    if (frac > 0.45) return ["Neutral", "--sig-yellow"];
-    if (frac > 0.25) return ["Weak", "--sig-red"];
-    return ["Washed out", "--sig-red"];
+  function mood(d) {
+    const score = (d.p50 >= 0.5 ? 1 : -1) + (d.net1m > 0 ? 1 : -1) + (d.net6m > 0 ? 1 : -1);
+    if (d.p50 >= 0.75) return ["OVERHEATED", "--sig-green"];
+    if (d.p50 <= 0.25) return ["WASHED OUT", "--sig-red"];
+    if (score >= 3) return ["STRONG", "--sig-green"];
+    if (score <= -3) return ["WEAK", "--sig-red"];
+    return ["MIXED", "--sig-yellow"];
   }
-  function renderTiles(d) {
-    const tiles = document.getElementById("tiles");
-    tiles.textContent = "";
-    function tile(label, value, note, frac) {
-      const t = el("div", { class: "tile" });
-      t.appendChild(el("div", { class: "label" }, label));
-      t.appendChild(el("div", { class: "value" }, value));
-      if (frac != null) {
-        const [word, v] = status(frac);
-        const b = el("span", { class: "badge" }, word);
-        b.style.background = soften(css(v));
-        b.style.color = inkFor(b.style.background);
-        t.appendChild(b);
-      }
-      if (note) t.appendChild(el("div", { class: "note" }, note));
-      tiles.appendChild(t);
-    }
-    tile("% above 20 DMA", pct(d.p20), d.a20 + " above · " + d.b20 + " below", d.p20);
-    tile("% above 50 DMA", pct(d.p50), d.a50 + " above · " + d.b50 + " below", d.p50);
-    tile("NEPSE change", signed(d.nepse, 2), d.close ? "Close " + d.close.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "");
-    tile("Turnover", d.turnover != null ? d.turnover.toFixed(2) : "–", "Rs Arba (billion)");
-    tile("Big moves today", "▲" + d.up45 + "  ▼" + d.dn45, "stocks up / down 4.5%+");
-    tile("52-week net", signed(d.net52), d.hi52 + " new highs · " + d.lo52 + " new lows");
-
-    // streak + plain-language verdict
-    const rows = state.rows;
-    const side = (r) => (r.p50 >= 0.5 ? "above" : "below");
-    let n = 0; while (n < rows.length && side(rows[n]) === side(d)) n++;
-    const w20 = rows[5] ? d.p20 - rows[5].p20 : null;
-    const trend = w20 == null ? "" : w20 > 0.05 ? " The 20 DMA reading is improving this week (" + signed(w20 * 100, 1) + " pts)." :
-      w20 < -0.05 ? " The 20 DMA reading is falling this week (" + signed(w20 * 100, 1) + " pts)." : " The 20 DMA reading is flat this week.";
-    document.getElementById("verdict").textContent =
-      status(d.p50)[0] + " market: " + pct(d.p50) + " of stocks are above their 50 DMA, " + (side(d) === "above" ? "above" : "below") +
-      " 50% for " + n + " session" + (n === 1 ? "" : "s") + " in a row." + trend;
+  function renderHeadline(d) {
+    const [word, v] = mood(d);
+    const w = document.getElementById("word");
+    w.textContent = word; w.style.background = soften(css(v)); w.style.color = inkFor(w.style.background);
+    let text = Math.round(d.p50 * 100) + "% of stocks sit above their 50-day average and " + Math.round(d.p20 * 100) + "% above their 20-day. " +
+      d.hi1m + " stocks hit a one-month high against " + d.lo1m + " one-month lows, and " +
+      d.hi6m + " reached six-month highs against " + d.lo6m + " lows.";
+    if (d.nepse != null && d.close != null) text += " NEPSE " + (d.nepse >= 0 ? "rose " : "fell ") + Math.abs(d.nepse).toFixed(2) + " points to " + d.close.toLocaleString("en-IN", { maximumFractionDigits: 2 }) + ".";
+    document.getElementById("summary").textContent = text;
   }
 
-  // ---------- heat map ----------
+  function renderHighsLows() {
+    const box = document.getElementById("hl"); box.textContent = "";
+    const d = state.rows[0], y = state.rows[1] || {};
+    [["", ""], ["New lows", "text-align:right"], ["Net", "text-align:center"], ["New highs", ""], ["Yesterday", "text-align:right"]].forEach(([h, st], i) =>
+      box.appendChild(el("div", { class: "hdr" + (i === 4 ? " y" : ""), style: st }, h)));
+    const per = [["1M", "1m"], ["3M", "3m"], ["6M", "6m"], ["52W", "52"]];
+    const max = Math.max(1, ...per.map(([, k]) => Math.max(d["hi" + k] || 0, d["lo" + k] || 0)));
+    per.forEach(([label, k]) => {
+      const hi = d["hi" + k], lo = d["lo" + k], net = d["net" + k];
+      box.appendChild(el("div", { class: "per" }, label));
+      const L = el("div", { class: "bar left" }); L.appendChild(el("span", null, String(lo)));
+      const li = el("i"); li.style.width = (lo / max) * 100 + "%"; L.appendChild(li); box.appendChild(L);
+      const n = el("div", { class: "net" }, signed(net)); n.style.color = net > 0 ? css("--sig-green") : net < 0 ? css("--sig-red") : ""; box.appendChild(n);
+      const R = el("div", { class: "bar right" }); const ri = el("i"); ri.style.width = (hi / max) * 100 + "%";
+      R.appendChild(ri); R.appendChild(el("span", null, String(hi))); box.appendChild(R);
+      box.appendChild(el("div", { class: "y" }, signed(y["net" + k])));
+    });
+  }
+
   const tip = document.getElementById("tip");
   function showTip(host, x, y, date, lines) {
     tip.textContent = "";
     tip.appendChild(el("div", { class: "t-date" }, fmtDate(date)));
     lines.forEach(([label, value]) => {
       const row = el("div", { class: "t-row" });
-      row.appendChild(el("strong", null, value));
-      row.appendChild(el("span", null, label));
+      row.appendChild(el("strong", null, value)); row.appendChild(el("span", null, label));
       tip.appendChild(row);
     });
     host.appendChild(tip);
-    const hw = host.clientWidth, tw = tip.offsetWidth;
-    tip.style.left = Math.max(0, Math.min(hw - tw, x + 12)) + "px";
-    tip.style.top = Math.max(0, y - 10) + "px";
+    tip.style.left = Math.max(0, Math.min(host.clientWidth - tip.offsetWidth, x + 12)) + "px";
+    tip.style.top = Math.max(0, y) + "px";
     tip.style.opacity = 1;
   }
   function hideTip() { tip.style.opacity = 0; }
 
-  function renderHeat() {
-    const grid = document.getElementById("heat");
-    grid.textContent = "";
-    const days = state.rows.slice(0, 60).reverse(); // oldest -> newest
-    [["20 DMA", "p20", "a20", "b20"], ["50 DMA", "p50", "a50", "b50"]].forEach(([label, key, a, b]) => {
-      grid.appendChild(el("div", { class: "heat-label" }, label));
-      const row = el("div", { class: "heat-row" });
-      days.forEach((d) => {
-        const c = el("div", { class: "heat-cell", tabindex: "0",
-          "aria-label": fmtDate(d.date) + ": " + pct(d[key]) + " of stocks above " + label });
-        c.style.background = signal(d[key]);
-        const show = (ev) => {
-          const host = document.getElementById("heatmap");
-          const r = host.getBoundingClientRect(), cr = c.getBoundingClientRect();
-          showTip(host, cr.left - r.left, cr.bottom - r.top + 6, d.date, [
-            ["above " + label, pct(d[key])], ["stocks above / below", d[a] + " / " + d[b]],
-            ["NEPSE change", signed(d.nepse, 2)]]);
-        };
-        c.addEventListener("pointerenter", show); c.addEventListener("focus", show);
-        c.addEventListener("pointerleave", hideTip); c.addEventListener("blur", hideTip);
-        row.appendChild(c);
-      });
-      grid.appendChild(row);
+  function renderSessions() {
+    const rangesBox = document.getElementById("sess-ranges"); rangesBox.textContent = "";
+    [[60, "3 months"], [125, "6 months"], [250, "1 year"], [750, "3 years"]].forEach(([n, label]) => {
+      const b = el("button", { class: "btn", type: "button", "aria-pressed": String(n === state.sess) }, label);
+      b.addEventListener("click", () => { state.sess = n; renderSessions(); });
+      rangesBox.appendChild(b);
     });
-    grid.appendChild(el("div"));
-    const dates = el("div", { class: "heat-dates" });
+    document.getElementById("sess-n").textContent = state.sess;
+    document.getElementById("ramp").style.background = "linear-gradient(90deg," + css("--sig-red") + "," + css("--sig-yellow") + "," + css("--sig-green") + ")";
+    const days = state.rows.slice(0, state.sess).reverse();
+    const box = document.getElementById("strips"); box.textContent = "";
+    const all = state.rows;
+    const rowsDef = [
+      ["Net 1-month highs", (d) => diverge(d.net1m, p95abs("net1m", all)), (d) => signed(d.net1m) + " (" + d.hi1m + " highs / " + d.lo1m + " lows)"],
+      ["Net 3-month highs", (d) => diverge(d.net3m, p95abs("net3m", all)), (d) => signed(d.net3m) + " (" + d.hi3m + " / " + d.lo3m + ")"],
+      ["Net 6-month highs", (d) => diverge(d.net6m, p95abs("net6m", all)), (d) => signed(d.net6m) + " (" + d.hi6m + " / " + d.lo6m + ")"],
+      ["Monthly thrust (25% movers)", (d) => diverge(d.thrust, p95abs("thrust", all)), (d) => signed(d.thrust) + " (" + d.up25 + " up / " + d.dn25 + " down)"],
+      ["Above 20-day average", (d) => signal(d.p20), (d) => pct(d.p20)],
+      ["Above 50-day average", (d) => signal(d.p50), (d) => pct(d.p50)],
+    ];
+    const host = document.getElementById("sessions");
+    rowsDef.forEach(([label, color, describe]) => {
+      box.appendChild(el("div", { class: "strip-label" }, label));
+      const strip = el("div", { class: "strip", role: "img", "aria-label": label + " over the last " + days.length + " sessions" });
+      days.forEach((d) => { const sp = el("span"); sp.style.background = color(d); sp._d = d; strip.appendChild(sp); });
+      strip.addEventListener("pointermove", (ev) => {
+        const t = ev.target; if (!t._d) return;
+        const r = host.getBoundingClientRect(), cr = t.getBoundingClientRect();
+        showTip(host, cr.left - r.left, cr.bottom - r.top + 6, t._d.date, [[label, describe(t._d)]]);
+      });
+      strip.addEventListener("pointerleave", hideTip);
+      box.appendChild(strip);
+      if (strip.clientWidth / days.length < 4) strip.classList.add("dense"); // no gaps when bars are very thin
+    });
+    const dates = el("div", { class: "strip-dates" });
     dates.appendChild(el("span", null, fmtDate(days[0].date)));
-    dates.appendChild(el("span", null, fmtDate(days[days.length - 1].date)));
-    grid.appendChild(dates);
+    dates.appendChild(el("span", null, "today · " + fmtDate(days[days.length - 1].date)));
+    box.appendChild(dates);
   }
 
-  // ---------- trend chart ----------
+  const VIEWS = {
+    highs: { name: "Net new highs", sub: "New highs minus new lows, as a count of stocks. Above zero means more stocks are making new highs than new lows.",
+      series: [["net1m", "--series-1", "1 month"], ["net3m", "--series-2", "3 months"], ["net6m", "--series-3", "6 months"], ["net52", "--series-4", "52 weeks"]], fmt: (v) => signed(v), pct: false },
+    dma: { name: "Above 20 / 50 DMA", sub: "Share of stocks above their moving average. Above 75% the market is stretched; below 25% it is washed out.",
+      series: [["p20", "--series-1", "20 DMA"], ["p50", "--series-2", "50 DMA"]], fmt: pct, pct: true },
+    thrust: { name: "Monthly thrust", sub: "Stocks up 25% or more in 20 sessions, minus those down 25% or more.",
+      series: [["thrust", "--series-1", "Monthly thrust"]], fmt: (v) => signed(v), pct: false },
+  };
   const RANGES = { "3M": 63, "6M": 125, "1Y": 250, "3Y": 750, "All": Infinity };
+  function renderViews() {
+    const box = document.getElementById("views"); box.textContent = "";
+    Object.keys(VIEWS).forEach((k) => {
+      const b = el("button", { class: "btn", type: "button", "aria-pressed": String(k === state.view) }, VIEWS[k].name);
+      b.addEventListener("click", () => { state.view = k; renderViews(); drawChart(); });
+      box.appendChild(b);
+    });
+    document.getElementById("chart-sub").textContent = VIEWS[state.view].sub;
+  }
   function renderRanges() {
-    const box = document.getElementById("ranges");
-    box.textContent = "";
+    const box = document.getElementById("ranges"); box.textContent = "";
     Object.keys(RANGES).forEach((k) => {
       const b = el("button", { class: "btn", type: "button", "aria-pressed": String(k === state.range) }, k);
       b.addEventListener("click", () => { state.range = k; renderRanges(); drawChart(); });
@@ -389,67 +425,69 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     if (text != null) e.textContent = text;
     return e;
   }
+  function niceStep(span) { const raw = span / 5, p = Math.pow(10, Math.floor(Math.log10(raw))); const m = raw / p; return (m < 1.5 ? 1 : m < 3 ? 2 : m < 7 ? 5 : 10) * p; }
   function drawChart() {
+    const view = VIEWS[state.view];
     const host = document.getElementById("chart");
     host.querySelectorAll("svg").forEach((x) => x.remove());
     const data = state.rows.slice(0, RANGES[state.range]).reverse();
-    const W = host.clientWidth || 800, H = 320, m = { l: 44, r: W < 520 ? 80 : 104, t: 12, b: 28 };
+    const series = view.series.filter(([k]) => !state.hidden[state.view + k]);
+    const W = host.clientWidth || 800, H = 320, m = { l: 48, r: W < 520 ? 70 : 104, t: 12, b: 28 };
     const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    let lo, hi;
+    if (view.pct) { lo = 0; hi = 1; }
+    else {
+      const vals = []; series.forEach(([k]) => data.forEach((d) => { if (d[k] != null && !isNaN(d[k])) vals.push(d[k]); }));
+      lo = Math.min(0, ...vals); hi = Math.max(0, ...vals);
+      if (lo === hi) hi = lo + 1;
+    }
+    const step = view.pct ? 0.25 : niceStep(hi - lo);
+    if (!view.pct) { lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step; }
     const x = (i) => m.l + (data.length < 2 ? 0 : (i / (data.length - 1)) * iw);
-    const y = (v) => m.t + (1 - v) * ih;
-    const svg = s("svg", { viewBox: "0 0 " + W + " " + H, role: "img",
-      "aria-label": "Line chart of the percent of stocks above their 20 and 50 day moving averages" });
-
-    // zones + grid
-    [[0.75, 1, "--sig-green"], [0, 0.25, "--sig-red"]].forEach(([a, b, v]) => {
-      svg.appendChild(s("rect", { x: m.l, y: y(b), width: iw, height: y(a) - y(b), fill: css(v), opacity: 0.08 }));
-    });
-    [0, 0.25, 0.5, 0.75, 1].forEach((v) => {
-      svg.appendChild(s("line", { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), stroke: css("--grid"),
-        "stroke-width": v === 0.5 ? 1.5 : 1, "stroke-dasharray": v === 0.5 ? "4 4" : "" }));
-      svg.appendChild(s("text", { x: m.l - 8, y: y(v) + 4, "text-anchor": "end", "font-size": 11, fill: css("--text-muted") }, v * 100 + "%"));
-    });
-    // x labels (about 6)
-    const step = Math.max(1, Math.round(data.length / 6));
-    for (let i = 0; i < data.length; i += step) {
+    const y = (v) => m.t + (1 - (v - lo) / (hi - lo)) * ih;
+    const svg = s("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": view.name + " chart" });
+    if (view.pct) [[0.75, 1, "--sig-green"], [0, 0.25, "--sig-red"]].forEach(([a, b, v]) =>
+      svg.appendChild(s("rect", { x: m.l, y: y(b), width: iw, height: y(a) - y(b), fill: css(v), opacity: 0.08 })));
+    for (let v = lo; v <= hi + 1e-9; v += step) {
+      const zero = Math.abs(v) < 1e-9 || (view.pct && Math.abs(v - 0.5) < 1e-9);
+      svg.appendChild(s("line", { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), stroke: zero ? css("--text-muted") : css("--grid"), "stroke-width": 1, "stroke-dasharray": zero && view.pct ? "4 4" : "" }));
+      svg.appendChild(s("text", { x: m.l - 8, y: y(v) + 4, "text-anchor": "end", "font-size": 11, fill: css("--text-muted") }, view.pct ? Math.round(v * 100) + "%" : String(Math.round(v))));
+    }
+    const xstep = Math.max(1, Math.round(data.length / 6));
+    for (let i = 0; i < data.length; i += xstep) {
       const d = data[i].date;
-      const label = state.range === "3M" || state.range === "6M" ? fmtDate(d).slice(0, 5) : d.slice(5, 7) + "/" + d.slice(2, 4);
+      const label = data.length <= 130 ? fmtDate(d).slice(0, 5) : d.slice(5, 7) + "/" + d.slice(2, 4);
       svg.appendChild(s("text", { x: x(i), y: H - 8, "text-anchor": "middle", "font-size": 11, fill: css("--text-muted") }, label));
     }
-    // lines
-    const series = [["p20", "--series-1", "20 DMA"], ["p50", "--series-2", "50 DMA"]];
-    series.forEach(([key, v]) => {
+    series.forEach(([k, v]) => {
       let dstr = "";
-      data.forEach((d, i) => { if (d[key] != null && !isNaN(d[key])) dstr += (dstr ? "L" : "M") + x(i).toFixed(1) + "," + y(d[key]).toFixed(1); });
+      data.forEach((d, i) => { if (d[k] != null && !isNaN(d[k])) dstr += (dstr ? "L" : "M") + x(i).toFixed(1) + "," + y(d[k]).toFixed(1); });
       svg.appendChild(s("path", { d: dstr, fill: "none", stroke: css(v), "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }));
     });
-    // direct labels at the end (nudged apart)
     const last = data[data.length - 1];
-    let ys = series.map(([key]) => y(last[key]));
-    if (Math.abs(ys[0] - ys[1]) < 14) { const mid = (ys[0] + ys[1]) / 2; const up = ys[0] <= ys[1] ? -1 : 1; ys = [mid + up * 7, mid - up * 7]; }
-    series.forEach(([key, v, name], k) => {
-      svg.appendChild(s("circle", { cx: x(data.length - 1), cy: y(last[key]), r: 4, fill: css(v), stroke: css("--surface-1"), "stroke-width": 2 }));
-      svg.appendChild(s("text", { x: x(data.length - 1) + 10, y: ys[k] + 4, "font-size": 12, fill: css("--text-primary") }, name + " " + pct(last[key])));
+    const ends = series.map(([k, v, name]) => ({ k, v, name, y: y(last[k]) })).sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 14) ends[i].y = ends[i - 1].y + 14;
+    ends.forEach((e) => {
+      svg.appendChild(s("circle", { cx: x(data.length - 1), cy: y(last[e.k]), r: 4, fill: css(e.v), stroke: css("--surface-1"), "stroke-width": 2 }));
+      svg.appendChild(s("text", { x: x(data.length - 1) + 10, y: e.y + 4, "font-size": 12, fill: css("--text-primary") }, (series.length > 1 ? e.name + " " : "") + view.fmt(last[e.k])));
     });
-    // crosshair + tooltip
     const hair = s("line", { y1: m.t, y2: m.t + ih, stroke: css("--text-muted"), "stroke-width": 1, opacity: 0 });
     const dots = series.map(([, v]) => s("circle", { r: 4, fill: css(v), stroke: css("--surface-1"), "stroke-width": 2, opacity: 0 }));
     svg.appendChild(hair); dots.forEach((dd) => svg.appendChild(dd));
     const hit = s("rect", { x: m.l, y: m.t, width: iw, height: ih, fill: "transparent", tabindex: "0" });
     svg.appendChild(hit);
+    let cur = data.length - 1;
     function at(i) {
       const d = data[i];
       hair.setAttribute("x1", x(i)); hair.setAttribute("x2", x(i)); hair.setAttribute("opacity", 0.6);
-      series.forEach(([key], k) => { dots[k].setAttribute("cx", x(i)); dots[k].setAttribute("cy", y(d[key])); dots[k].setAttribute("opacity", 1); });
-      const scale = host.clientWidth / W;
-      showTip(host, x(i) * scale, m.t + 10, d.date, [["above 20 DMA", pct(d.p20)], ["above 50 DMA", pct(d.p50)], ["NEPSE change", signed(d.nepse, 2)]]);
+      series.forEach(([k], j) => { dots[j].setAttribute("cx", x(i)); dots[j].setAttribute("cy", d[k] == null ? 0 : y(d[k])); dots[j].setAttribute("opacity", d[k] == null ? 0 : 1); });
+      const lines = series.map(([k, , name]) => [name, view.fmt(d[k])]);
+      if (d.nepse != null) lines.push(["NEPSE change", signed(d.nepse, 2)]);
+      showTip(host, x(i) * (host.clientWidth / W), m.t + 10, d.date, lines);
     }
-    let cur = data.length - 1;
     hit.addEventListener("pointermove", (ev) => {
-      const r = svg.getBoundingClientRect();
-      const px = (ev.clientX - r.left) * (W / r.width);
-      cur = Math.max(0, Math.min(data.length - 1, Math.round(((px - m.l) / iw) * (data.length - 1))));
-      at(cur);
+      const r = svg.getBoundingClientRect(); const px = (ev.clientX - r.left) * (W / r.width);
+      cur = Math.max(0, Math.min(data.length - 1, Math.round(((px - m.l) / iw) * (data.length - 1)))); at(cur);
     });
     hit.addEventListener("focus", () => at(cur));
     hit.addEventListener("keydown", (ev) => {
@@ -459,11 +497,52 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     const off = () => { hideTip(); hair.setAttribute("opacity", 0); dots.forEach((dd) => dd.setAttribute("opacity", 0)); };
     hit.addEventListener("pointerleave", off); hit.addEventListener("blur", off);
     host.insertBefore(svg, tip);
+
+    const lg = document.getElementById("chart-legend"); lg.textContent = "";
+    view.series.forEach(([k, v, name]) => {
+      const on = !state.hidden[state.view + k];
+      const b = el("button", { class: "key", type: "button", "aria-pressed": String(on) });
+      const i = el("i"); i.style.background = css(v); b.appendChild(i); b.appendChild(document.createTextNode(name));
+      b.addEventListener("click", () => {
+        if (on && view.series.filter(([kk]) => !state.hidden[state.view + kk]).length === 1) return;
+        state.hidden[state.view + k] = on; drawChart();
+      });
+      lg.appendChild(b);
+    });
+    if (view.series.length > 1) lg.appendChild(el("span", { class: "muted" }, "· click a name to hide or show it"));
   }
   let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => state.rows && drawChart(), 150); });
 
-  // ---------- breadth log table ----------
-  // [group, header, field, colour rule]
+  function status(frac) {
+    if (frac >= 0.75) return ["Overheated", "--sig-green"];
+    if (frac >= 0.55) return ["Strong", "--sig-green"];
+    if (frac > 0.45) return ["Neutral", "--sig-yellow"];
+    if (frac > 0.25) return ["Weak", "--sig-red"];
+    return ["Washed out", "--sig-red"];
+  }
+  function renderTiles(d) {
+    const tiles = document.getElementById("tiles"); tiles.textContent = "";
+    function tile(label, value, note, frac) {
+      const t = el("div", { class: "tile" });
+      t.appendChild(el("div", { class: "label" }, label));
+      t.appendChild(el("div", { class: "value" }, value));
+      if (frac != null) {
+        const [word, v] = status(frac);
+        const b = el("span", { class: "badge" }, word);
+        b.style.background = soften(css(v)); b.style.color = inkFor(b.style.background);
+        t.appendChild(b);
+      }
+      if (note) t.appendChild(el("div", { class: "note" }, note));
+      tiles.appendChild(t);
+    }
+    tile("% above 20 DMA", pct(d.p20), d.a20 + " above · " + d.b20 + " below", d.p20);
+    tile("% above 50 DMA", pct(d.p50), d.a50 + " above · " + d.b50 + " below", d.p50);
+    tile("NEPSE change", signed(d.nepse, 2), d.close ? "Close " + d.close.toLocaleString("en-IN", { maximumFractionDigits: 2 }) : "");
+    tile("Turnover", d.turnover != null ? d.turnover.toFixed(2) : "–", "Rs Arba (billion)");
+    tile("Big moves today", "▲" + d.up45 + "  ▼" + d.dn45, "stocks up / down 4.5%+");
+    tile("20%+ in 5 days", "▲" + d.up5 + "  ▼" + d.dn5, "stocks up / down 20%+");
+  }
+
   const COLS = [
     ["", "Date", "date", "date"],
     ["Today", "Up 4.5%+", "up45", "up"], ["Today", "Down 4.5%+", "dn45", "down"],
@@ -473,59 +552,44 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     ["Market", "Turnover (Arba)", "turnover", "vol"], ["Market", "NEPSE", "nepse", "net"],
     ["% of stocks", "> 20 DMA", "p20", "pct"], ["% of stocks", "> 50 DMA", "p50", "pct"],
     ["Monthly", "Up 25%+ 20d", "up25", "up"], ["Monthly", "Down 25%+ 20d", "dn25", "down"], ["Monthly", "Thrust", "thrust", "net"],
-    ["1 month", "New highs", "hi1m", "up"], ["1 month", "New lows", "lo1m", "down"], ["1 month", "Net", "net1m", "net"],
-    ["52 weeks", "New highs", "hi52", "up"], ["52 weeks", "New lows", "lo52", "down"], ["52 weeks", "Net", "net52", "net"],
+    ["1 month", "Highs", "hi1m", "up"], ["1 month", "Lows", "lo1m", "down"], ["1 month", "Net", "net1m", "net"],
+    ["3 months", "Highs", "hi3m", "up"], ["3 months", "Lows", "lo3m", "down"], ["3 months", "Net", "net3m", "net"],
+    ["6 months", "Highs", "hi6m", "up"], ["6 months", "Lows", "lo6m", "down"], ["6 months", "Net", "net6m", "net"],
+    ["52 weeks", "Highs", "hi52", "up"], ["52 weeks", "Lows", "lo52", "down"], ["52 weeks", "Net", "net52", "net"],
   ];
   function renderRowButtons() {
-    const box = document.getElementById("rows");
-    box.textContent = "";
+    const box = document.getElementById("rows"); box.textContent = "";
     [[30, "30 days"], [90, "90 days"], [250, "1 year"], [Infinity, "All"]].forEach(([n, label]) => {
       const b = el("button", { class: "btn", type: "button", "aria-pressed": String(n === state.show) }, label);
       b.addEventListener("click", () => { state.show = n; renderRowButtons(); renderTable(); });
       box.appendChild(b);
     });
   }
-  function scaleMax(field) { // 95th percentile for up/down colour scales
-    const v = state.rows.map((r) => r[field]).filter((x) => x != null).sort((a, b) => a - b);
-    return Math.max(1, v[Math.floor(v.length * 0.95)] || 1);
-  }
   function renderTable() {
-    const t = document.getElementById("table");
-    t.textContent = "";
-    const thead = el("thead");
-    const g = el("tr", { class: "groups" }), h = el("tr", { class: "cols" });
+    const t = document.getElementById("table"); t.textContent = "";
+    const thead = el("thead"), g = el("tr", { class: "groups" }), h = el("tr", { class: "cols" });
     let i = 0;
-    while (i < COLS.length) {
-      let j = i; while (j < COLS.length && COLS[j][0] === COLS[i][0]) j++;
-      g.appendChild(el("th", { colspan: String(j - i) }, COLS[i][0]));
-      i = j;
-    }
+    while (i < COLS.length) { let j = i; while (j < COLS.length && COLS[j][0] === COLS[i][0]) j++; g.appendChild(el("th", { colspan: String(j - i) }, COLS[i][0])); i = j; }
     COLS.forEach((c) => h.appendChild(el("th", { scope: "col" }, c[1])));
     thead.appendChild(g); thead.appendChild(h); t.appendChild(thead);
-
     const maxes = {};
-    COLS.forEach((c) => { if (c[3] === "up" || c[3] === "down" || c[3] === "vol") maxes[c[2]] = scaleMax(c[2]); });
+    COLS.forEach((c) => { if (["up", "down", "vol", "net"].includes(c[3])) maxes[c[2]] = p95abs(c[2], state.rows); });
     const green = css("--sig-green"), red = css("--sig-red"), surf = css("--surface-1"), blue = css("--series-1");
     const tbody = el("tbody");
     state.rows.slice(0, state.show).forEach((r) => {
       const tr = el("tr");
       COLS.forEach(([, , f, rule]) => {
-        const v = r[f];
-        let text, color = null;
+        const v = r[f]; let text, bg = null;
         if (rule === "date") text = fmtDate(v);
         else if (v == null || isNaN(v)) text = "–";
-        else if (rule === "pct") { text = pct(v); color = signal(v); }
-        else if (rule === "dmaA") { text = String(v); color = signal(v / (r[f] + r[f === "a20" ? "b20" : "b50"])); }
-        else if (rule === "dmaB") { text = String(v); const a = r[f === "b20" ? "a20" : "a50"]; color = signal(a / (a + v)); }
-        else if (rule === "net") { text = signed(v, f === "nepse" ? 2 : 0); color = v > 0 ? mix(surf, green, Math.min(1, 0.35 + Math.abs(v) / (f === "nepse" ? 40 : 60))) : v < 0 ? mix(surf, red, Math.min(1, 0.35 + Math.abs(v) / (f === "nepse" ? 40 : 60))) : null; }
-        else if (rule === "vol") { text = v.toFixed(2); color = mix(surf, blue, Math.min(1, v / maxes[f]) * 0.7); }
-        else { text = String(v); const t2 = Math.min(1, v / maxes[f]); color = t2 > 0 ? mix(surf, rule === "up" ? green : red, t2) : null; }
+        else if (rule === "pct") { text = pct(v); bg = soften(signal(v)); }
+        else if (rule === "dmaA") { text = String(v); bg = soften(signal(v / (v + r[f === "a20" ? "b20" : "b50"]))); }
+        else if (rule === "dmaB") { text = String(v); const a = r[f === "b20" ? "a20" : "a50"]; bg = soften(signal(a / (a + v))); }
+        else if (rule === "net") { text = signed(v, f === "nepse" ? 2 : 0); if (v) bg = mix(surf, v > 0 ? green : red, Math.min(1, 0.3 + 0.7 * Math.abs(v) / maxes[f])); }
+        else if (rule === "vol") { text = v.toFixed(2); bg = mix(surf, blue, Math.min(1, v / maxes[f]) * 0.7); }
+        else { text = String(v); const k = Math.min(1, v / maxes[f]); if (k > 0) bg = soften(mix(surf, rule === "up" ? green : red, k)); }
         const td = el("td", null, text);
-        if (color) {
-          const bg = rule !== "vol" && rule !== "net" ? soften(color) : color;
-          td.style.background = bg;
-          td.style.color = inkFor(bg);
-        }
+        if (bg) { td.style.background = bg; td.style.color = inkFor(bg); }
         tr.appendChild(td);
       });
       tbody.appendChild(tr);

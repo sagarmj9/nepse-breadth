@@ -59,9 +59,16 @@ BREADTH_HEADER = [
     "52W net",
     "NEPSE close",
     "Stocks counted",
+    "New 3M highs",
+    "New 3M lows",
+    "3M net",
+    "New 6M highs",
+    "New 6M lows",
+    "6M net",
 ]
 
-WARMUP_DAYS = 50  # need 50 sessions of history before rows are reliable
+WARMUP_DAYS = 50
+WINDOWS = (20, 60, 120, 250)  # 1 month, 3 months, 6 months, 52 weeks (market days)  # need 50 sessions of history before rows are reliable
 
 
 # ----------------------------------------------------------------------------- io
@@ -232,24 +239,31 @@ def compute():
         for s, c in last_close.items():
             closes[s].append(c)
 
-        up = dn = hi52 = lo52 = 0
+        up = dn = 0
+        nh = {w: 0 for w in WINDOWS}
+        nl = {w: 0 for w in WINDOWS}
         for s, r in today.items():
             c, p = num(r["close"]), num(r["prev_close"])
             if p:
                 ch = (c / p - 1) * 100
                 up += ch >= 4.5
                 dn += ch <= -4.5
-            # New 52-week high/low (about 250 market days, bonus-adjusted); stock must be listed 1 year+
+            # New 1M / 3M / 6M / 52W highs and lows: today's intraday high (low) above (below)
+            # every high (low) of the previous 20 / 60 / 120 / 250 market days, bonus-adjusted.
+            # The stock must have been listed for the whole period.
             h, l = num(r["high"]) or c, num(r["low"]) or c
             hist = hilo[s]
             while hist and hist[0][0] <= i - 250:
                 hist.pop(0)
-            if first_day[s] <= i - 249 and hist:
-                hi52 += h > max(e[1] for e in hist)
-                lo52 += l < min(e[2] for e in hist)
+            for w in WINDOWS:
+                if first_day[s] <= i - (w - 1):
+                    win = [e for e in hist if e[0] > i - w]
+                    if win:
+                        nh[w] += h > max(e[1] for e in win)
+                        nl[w] += l < min(e[2] for e in win)
             hist.append([i, h, l])
 
-        u5 = d5 = u20 = d20 = a20 = b20 = a50 = b50 = hi1m = lo1m = counted = 0
+        u5 = d5 = u20 = d20 = a20 = b20 = a50 = b50 = counted = 0
         for s, cl in closes.items():
             c = cl[-1]
             counted += 1
@@ -261,9 +275,6 @@ def compute():
                 x = (c / cl[-21] - 1) * 100
                 u20 += x >= 25
                 d20 += x <= -25
-                prev20 = cl[-21:-1]
-                hi1m += c > max(prev20)
-                lo1m += c < min(prev20)
             if len(cl) >= 20:
                 m = sum(cl[-20:]) / 20
                 a20 += c > m
@@ -287,9 +298,12 @@ def compute():
             ix.get("change", ""),
             f"{a20 / (a20 + b20) * 100:.2f}%" if a20 + b20 else "",
             f"{a50 / (a50 + b50) * 100:.2f}%" if a50 + b50 else "",
-            u20, d20, u20 - d20, hi1m, lo1m, hi1m - lo1m,
-            hi52, lo52, hi52 - lo52,
+            u20, d20, u20 - d20,
+            nh[20], nl[20], nh[20] - nl[20],
+            nh[250], nl[250], nh[250] - nl[250],
             ix.get("close", ""), counted,
+            nh[60], nl[60], nh[60] - nl[60],
+            nh[120], nl[120], nh[120] - nl[120],
         ])
 
     out.reverse()  # newest first, like the sheet
