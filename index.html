@@ -130,7 +130,8 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
 .result { font-size: 18px; margin: 6px 0 10px; }
 .result b { color: var(--teal); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { border: 1px solid var(--border); background: var(--surface-2); border-radius: 6px; padding: 3px 8px; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; cursor: default; }
+.chip { border: 1px solid var(--border); background: var(--surface-2); border-radius: 6px; padding: 3px 8px; font-size: 12.5px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-primary); text-decoration: none; }
+.chip:hover { border-color: var(--teal); }
 .chip small { font-weight: 500; color: var(--text-secondary); margin-left: 5px; }
 .empty { color: var(--text-muted); font-size: 13px; }
 .secrank { display: grid; grid-template-columns: minmax(150px, 220px) 1fr 120px; gap: 6px 14px; align-items: center; font-size: 13px; }
@@ -215,7 +216,7 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
 
   <section class="card" id="momentum">
     <h2>Broad momentum</h2>
-    <p class="sub">Pick a sector, a gain and a number of trading days. See how many stocks gained at least that much, so you can tell a broad advance from a few stocks doing the work.</p>
+    <p class="sub">Pick a sector, a gain and a number of trading days. See how many stocks gained at least that much, so you can tell a broad advance from a few stocks doing the work. Click a name to open its chart on NepseAlpha.</p>
     <div class="filters">
       <label>Sector<select id="m-sec"></select></label>
       <label>Gain of at least<select id="m-gain"></select></label>
@@ -230,7 +231,7 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
 
   <section class="card" id="h52">
     <h2>52-week highs</h2>
-    <p class="sub">Stocks at a new high today, or close to their 52-week high (intraday prices, adjusted for bonus shares).</p>
+    <p class="sub">Stocks at a new high today, or close to their 52-week high (intraday prices, adjusted for bonus shares). Click a name to open its chart on NepseAlpha.</p>
     <div class="filters">
       <label>Show<select id="h-mode"></select></label>
       <label>Within (%)<input id="h-pct" type="number" min="0.5" max="30" step="0.5" value="5"></label>
@@ -239,6 +240,8 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     <div class="actions" id="h-actions"></div>
     <p class="result" id="h-result"></p>
     <div class="chips" id="h-list"></div>
+    <p class="subhead">Every sector, ranked by the share of its stocks that pass the same test (tap one to list it above):</p>
+    <div class="secrank" id="h-rank"></div>
   </section>
 
   <section class="card" id="rs">
@@ -271,7 +274,7 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
       <li><b>20 DMA</b> reacts first (early signal); <b>50 DMA</b> confirms the bigger trend. Green = most stocks above (strong), red = most below (weak).</li>
       <li><b>Monthly thrust</b> above zero means more stocks have jumped 25%+ in a month than crashed 25%+: strong momentum.</li>
       <li><b>Extremes matter:</b> too many solid greens in a row means the market is stretched and may pause; long red streaks can mean it is washed out and close to a bounce.</li>
-      <li><b>Copy symbols</b> copies the list (e.g. NABIL,NICA,UPPER) so you can paste it into a watchlist on your charting site.</li>
+      <li>Click any stock name to open its chart on NepseAlpha. <b>Copy symbols</b> copies the list (e.g. NABIL,NICA,UPPER) so you can paste it into a watchlist on your charting site.</li>
       <li>Before 2026 fewer stocks were counted (some merged companies are missing from old data), so compare old years with the % columns. NEPSE index values start from Nov 2025.</li>
     </ul>
   </section>
@@ -406,6 +409,17 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
       d.hi1m + " stocks hit a one-month high against " + d.lo1m + " one-month lows, and " +
       d.hi6m + " reached six-month highs against " + d.lo6m + " lows.";
     if (d.nepse != null && d.close != null) text += " NEPSE " + (d.nepse >= 0 ? "rose " : "fell ") + Math.abs(d.nepse).toFixed(2) + " points to " + d.close.toLocaleString("en-IN", { maximumFractionDigits: 2 }) + ".";
+    // NEPSE against its 50-day average and its one-year high (closing values)
+    const idx = state.rows.filter((r) => r.close != null);
+    if (d.close != null && idx.length >= 50) {
+      const avg50 = idx.slice(0, 50).reduce((a, r) => a + r.close, 0) / 50;
+      const yearAgo = new Date(d.date); yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+      const cutoff = yearAgo.toISOString().slice(0, 10);
+      const high = Math.max(...idx.filter((r) => r.date > cutoff).map((r) => r.close));
+      const vsAvg = (d.close / avg50 - 1) * 100, vsHigh = (d.close / high - 1) * 100;
+      text += " NEPSE is " + Math.abs(vsAvg).toFixed(1) + "% " + (vsAvg >= 0 ? "above" : "below") + " its 50-day average and " +
+        (vsHigh >= -0.05 ? "at its one-year high." : Math.abs(vsHigh).toFixed(1) + "% under its one-year high.");
+    }
     document.getElementById("summary").textContent = text;
   }
 
@@ -687,7 +701,8 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     const box = document.getElementById(boxId); box.textContent = "";
     if (!list.length) { box.appendChild(el("span", { class: "empty" }, "No stocks match right now.")); return; }
     list.forEach((x) => {
-      const c = el("span", { class: "chip", title: x.n + " · " + x.sec + " · close " + x.c + (x.chg != null ? " (" + signed(x.chg, 2) + "%)" : "") });
+      const c = el("a", { class: "chip", target: "_blank", rel: "noopener", href: "https://nepsealpha.com/trading/chart?symbol=" + encodeURIComponent(x.s),
+        title: x.n + " · " + x.sec + " · close " + x.c + (x.chg != null ? " (" + signed(x.chg, 2) + "%)" : "") + " · open chart on NepseAlpha" });
       c.appendChild(document.createTextNode(x.s));
       if (label) c.appendChild(el("small", null, label(x)));
       box.appendChild(c);
@@ -774,14 +789,17 @@ footer { margin-top: 26px; font-size: 12px; color: var(--text-muted); text-align
     const within = Math.max(0.5, Math.min(30, +document.getElementById("h-pct").value || 5));
     document.getElementById("h-pct").parentElement.style.display = mode === "near" ? "" : "none";
     const scope = state.stocks.filter((x) => !sec || x.sec === sec);
-    let list, text;
+    let list, text, pass;
     if (mode === "near") {
-      list = scope.filter((x) => x.fromHigh != null && x.days >= 250 && x.fromHigh >= -within).sort((a, b) => b.fromHigh - a.fromHigh);
+      pass = (x) => x.fromHigh != null && x.days >= 250 && x.fromHigh >= -within;
+      list = scope.filter(pass).sort((a, b) => b.fromHigh - a.fromHigh);
       text = " stocks are within " + within + "% of their 52-week high.";
     } else {
-      const w = +mode; list = scope.filter((x) => x.hi.includes(w)).sort((a, b) => (b.chg || 0) - (a.chg || 0));
+      const w = +mode; pass = (x) => x.hi.includes(w);
+      list = scope.filter(pass).sort((a, b) => (b.chg || 0) - (a.chg || 0));
       text = " stocks are at a new " + { 250: "52-week", 120: "6-month", 60: "3-month", 20: "1-month" }[w] + " high today.";
     }
+    sectorRank("h-rank", bySector(state.stocks), pass, null, (s2) => { document.getElementById("h-sec").value = s2; renderHighs(); document.getElementById("h52").scrollIntoView({ behavior: "smooth" }); }, 12);
     const res = document.getElementById("h-result"); res.textContent = "";
     res.appendChild(el("b", null, String(list.length))); res.appendChild(document.createTextNode((sec ? " " + sec : "") + text));
     chips("h-list", list, (x) => (mode === "near" ? (x.fromHigh === 0 ? "at high" : x.fromHigh.toFixed(1) + "%") : x.chg != null ? signed(x.chg, 1) + "%" : ""));
